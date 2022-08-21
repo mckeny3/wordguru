@@ -1,21 +1,26 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
 
-const Actions = ({ arrayLen, isGameStart, bunny }) => {
+const Actions = ({
+  arrayLen,
+  isGameStart,
+  row,
+  onPress,
+  rowIndex,
+  colIndex,
+}) => {
   //console.warn({ arrayLen, isGameStart, bunny });
   const test = "red";
   return (
     <View style={styles.action_wrapper}>
       <Pressable
-        disabled={(bunny.length < arrayLen) | !isGameStart ? true : false}
-        onClick={() => handleSubmit()}
+        disabled={colIndex < 5 ? true : false}
+        onPress={() => onPress()}
         type="submit"
       >
         <Text
           style={
-            (bunny.length < arrayLen) | !isGameStart
-              ? styles.action_restart_disabled
-              : styles.action_submit
+            colIndex < 5 ? styles.action_restart_disabled : styles.action_submit
           }
         >
           Submit

@@ -22,6 +22,13 @@ const HomeScreen = () => {
   const [rowIndex, setRowIndex] = useState(0);
   const [colIndex, setColIndex] = useState(0);
   const [attemts, setAttemts] = useState(4);
+  const [gameState, setGameState] = useState({
+    END: false,
+    PLAYING: false,
+    WON: false,
+    LOST: false,
+  });
+
   /////////////RESTART
   const restart = () => {
     setFiveLetter("");
@@ -45,8 +52,6 @@ const HomeScreen = () => {
   const handleKey = (item) => {
     console.log(colIndex);
     if (colIndex < 5 && rowIndex < attemts && !result) {
-      console.log("not del", item);
-
       console.log("the row", row);
 
       const copy = [...row.map((arr) => [...arr])];
@@ -56,50 +61,6 @@ const HomeScreen = () => {
     }
   };
 
-  ////////HANDLE sUBMIT
-  const handleSubmit = () => {
-    let len = key.length;
-    console.log("handling submit");
-    let string = "";
-    for (let i = 0; i < len; i++) {
-      string += key[i].value;
-    }
-
-    /////reaveal color
-    const updatedColor = key.map((k, i) => {
-      if (rondomWord.split("").indexOf(k.value) === i) {
-        //console.table(k, i);
-
-        // let updateColor = [...k, (color = "green")];
-        if (key2.length === 6) {
-          setIsgameStart(false);
-        }
-        return { ...k, color: "green" };
-      } else if (
-        rondomWord.split("").indexOf(k.value) !== i &&
-        rondomWord.includes(k.value)
-      ) {
-        // console.log("included match", { k, i });
-        return { ...k, color: "orange" };
-      }
-      // console.log("not include", k);
-      return { ...k, color: "grey" };
-    });
-    setKey2((prev) => [...prev, updatedColor]);
-    setKey([]);
-
-    ///
-    setFiveLetter(string);
-    if (rondomWord === string) {
-      console.log("match", rondomWord);
-      return setResult(true);
-    } else {
-      setLine((prev) => prev + 1);
-
-      //setArrayLen((prev) => prev + 5);
-    }
-    return;
-  };
   ///handleDelete
   const handleDelete = () => {
     console.log(key);
@@ -111,17 +72,24 @@ const HomeScreen = () => {
   };
 
   /////////HANDLIE SUBMIT
+  /////get rondomword index
 
-  const submit = () => {
+  const getWordIndex = (word, value) => {
+    return word.split("").indexOf(value);
+  };
+  const handleSubmit = () => {
+    console.log("oressed");
     if (rowIndex > 3) return;
-
-    //console.log(row[0][2]);
 
     /////reaveal color
     let copy = [...row.map((row, i) => [...row])];
     setRowIndex((prev) => prev + 1);
     setColIndex(0);
-    copy[rowIndex].map((item) => {
+    copy[rowIndex].map((item, i) => {
+      if (rondomWord.split("").indexOf(...item.value) == i) {
+        return { ...(item.color = "green") };
+      }
+
       if (rondomWord.includes(item.value)) {
         console.log("included");
         return { ...(item.color = "red") };
@@ -129,7 +97,6 @@ const HomeScreen = () => {
         return { ...(item.color = "grey") };
       }
     });
-    console.log(copy);
     setRow(copy);
   };
 
@@ -165,7 +132,14 @@ const HomeScreen = () => {
         setKey={setKey}
         handleDelete={handleDelete}
       />
-      <Actions bunny={key} arrayLen={arrayLen} isGameStart={isGameStart} />
+      <Actions
+        rowIndex={rowIndex}
+        colIndex={colIndex}
+        onPress={handleSubmit}
+        row={row}
+        arrayLen={arrayLen}
+        isGameStart={isGameStart}
+      />
 
       {/*  */}
     </View>
