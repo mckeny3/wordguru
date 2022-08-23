@@ -1,43 +1,51 @@
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  SafeAreaView,
+  Alert,
+  Platform,
+  Modal,
+} from "react-native";
 import React, { useEffect } from "react";
 import Keyboard from "../components/keyboard";
 import { word } from "../data";
 import { useState } from "react";
 import Actions from "../components/Action";
-
+import GameHeader from "../components/gameHeader";
+import ExpoStatusBar from "expo-status-bar/build/ExpoStatusBar";
+import gameSlice, {
+  setArrayRow,
+  setBgColor,
+  setColIndex,
+  setRowIndex,
+  updateGame,
+  updateSuccessStats,
+  updateWordLength,
+} from "../redux/gameSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { getStringArray } from "../helperFunctions";
+import WonModel from "../components/wonModel";
 const HomeScreen = () => {
   const [fiveLetter, setFiveLetter] = useState("");
   const [result, setResult] = useState(false);
   const [rondomWord, setRondomWord] = useState("");
   const [key, setKey] = useState([]);
-  const [key2, setKey2] = useState([]);
-  const [line, setLine] = useState(1);
-  const [disableSubmit, setDisableSubmit] = useState(true);
   const [arrayLen, setArrayLen] = useState(5);
   const [restartGame, setRestartGame] = useState(false);
   const [isGameStart, setIsgameStart] = useState(false);
-  const [letter, setLetter] = useState({});
-  const [row, setRow] = useState(new Array(4).fill(new Array(5).fill("")));
-
-  const [rowIndex, setRowIndex] = useState(0);
-  const [colIndex, setColIndex] = useState(0);
-  const [attemts, setAttemts] = useState(4);
-  const [gameState, setGameState] = useState({
-    END: false,
-    PLAYING: false,
-    WON: false,
-    LOST: false,
+  const [letter, setLetter] = useState();
+  const { game } = useSelector((state) => state.reducer.game);
+  const colIndex = game.colIndex;
+  const rowIndex = game.rowIndex;
+  const [gam, setGam] = useState({
+    ROW_ARRAY: new Array(6).fill(new Array(5).fill("")),
   });
-
-  /////////////RESTART
-  const restart = () => {
-    setFiveLetter("");
-    setArrayLen(5);
-    setKey2([]);
-    setIsgameStart(true);
-    setRestartGame((prev) => !prev);
-    return setKey([]);
-  };
+  const {} = useSelector((state) => state.reducer.user);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     let len = word.length;
@@ -50,71 +58,81 @@ const HomeScreen = () => {
 
   ////entered key
   const handleKey = (item) => {
-    console.log(colIndex);
-    if (colIndex < 5 && rowIndex < attemts && !result) {
-      console.log("the row", row);
-
-      const copy = [...row.map((arr) => [...arr])];
-      const updated = (copy[rowIndex][colIndex] = item);
-      setColIndex((prev) => prev + 1);
-      return setRow(copy);
+    if (colIndex < 5 && rowIndex < game.ATTEMPTS) {
+      const copy = [...gam.ROW_ARRAY.map((arr) => [...arr])];
+      copy[rowIndex][colIndex] = item;
+      dispatch(setColIndex(colIndex + 1));
+      return setGam({ ROW_ARRAY: copy });
     }
   };
 
   ///handleDelete
   const handleDelete = () => {
-    console.log(key);
-    if (key.length <= 0) return;
+    if (colIndex <= 0) return;
+    const colIndexReverse = colIndex - 1;
     //const pop = g.splice(g.length - 1, 1);
-    let copy = [...key];
-    copy.pop();
-    setKey(copy);
+    let copy = [...gam.ROW_ARRAY.map((row) => [...row])];
+
+    copy[rowIndex][colIndexReverse] = "";
+    dispatch(setColIndex(colIndexReverse));
+    console.log({ colIndexReverse });
+    return setGam({ ROW_ARRAY: copy });
   };
 
   /////////HANDLIE SUBMIT
-  /////get rondomword index
 
-  const getWordIndex = (word, value) => {
-    return word.split("").indexOf(value);
-  };
   const handleSubmit = () => {
-    console.log("oressed");
     if (rowIndex > 3) return;
 
     /////reaveal color
-    let copy = [...row.map((row, i) => [...row])];
-    setRowIndex((prev) => prev + 1);
-    setColIndex(0);
+    let copy = [...gam.ROW_ARRAY.map((row, i) => [...row])];
+    dispatch(setRowIndex(rowIndex + 1));
+    dispatch(setColIndex(0));
     copy[rowIndex].map((item, i) => {
-      if (rondomWord.split("").indexOf(...item.value) == i) {
+      if (rondomWord[i] === item.value) {
+        if (getStringArray(gam.ROW_ARRAY[rowIndex]) === rondomWord) {
+          console.log("correct");
+          dispatch(updateSuccessStats());
+        }
         return { ...(item.color = "green") };
       }
 
       if (rondomWord.includes(item.value)) {
         console.log("included");
-        return { ...(item.color = "red") };
-      } else {
-        return { ...(item.color = "grey") };
+        return { ...(item.color = "orange") };
       }
+      return { ...(item.color = "grey") };
     });
-    setRow(copy);
+    console.log(copy);
+    return dispatch(setArrayRow(copy));
   };
 
+  ////HANDLE RESTART
+  const handleRestart = () => {};
+
+  const { test } = useSelector((state) => state.reducer.game);
+  console.log(game);
   return (
-    <View style={styles.container}>
-      <Pressable onPress={() => submit()}>
-        <Text> Sumit -{rondomWord}</Text>
-      </Pressable>
+    <SafeAreaView style={styles.container}>
+      <ExpoStatusBar />
+      <GameHeader />
       <View style={styles.game_wrapper}>
+        <Modal transparent={true} visible={game.MODAL_OPEN}>
+          <WonModel />
+        </Modal>
         <ScrollView>
-          {row.map((rows, i) => (
-            <View key={i} style={styles.game_row}>
+          {gam.ROW_ARRAY.map((rows, rowkey) => (
+            <View key={rowkey} style={styles.game_row}>
               {rows.map((cell, i) => (
                 <View
                   key={i}
                   style={[
                     styles.game_cell,
-                    { backgroundColor: cell.color ? cell.color : "#61dafb" },
+                    {
+                      backgroundColor: cell.color ? cell.color : "#61dafb",
+                      borderColor:
+                        colIndex === i && rowIndex === rowkey ? "red" : "",
+                    },
                   ]}
                 >
                   <Text style={styles.cell_letter}>{cell.value} </Text>
@@ -125,6 +143,16 @@ const HomeScreen = () => {
         </ScrollView>
       </View>
 
+      <Actions
+        rowIndex={rowIndex}
+        colIndex={colIndex}
+        onPress={handleSubmit}
+        row={gam.ROW_ARRAY}
+        arrayLen={arrayLen}
+        isGameStart={isGameStart}
+        handleRestart={handleRestart}
+      />
+
       <Keyboard
         setLetter={setLetter}
         handleKey={handleKey}
@@ -132,17 +160,17 @@ const HomeScreen = () => {
         setKey={setKey}
         handleDelete={handleDelete}
       />
-      <Actions
-        rowIndex={rowIndex}
-        colIndex={colIndex}
-        onPress={handleSubmit}
-        row={row}
-        arrayLen={arrayLen}
-        isGameStart={isGameStart}
-      />
-
       {/*  */}
-    </View>
+      <Pressable
+        onPress={() =>
+          Platform.OS === "windows"
+            ? Alert.alert("Word Guru", rondomWord)
+            : alert(rondomWord)
+        }
+      >
+        <Text>Give up!!!!{rondomWord}</Text>
+      </Pressable>
+    </SafeAreaView>
   );
 };
 
@@ -179,7 +207,7 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   game_wrapper: {
-    backgroundColor: "black",
+    backgroundColor: "#ffffff",
 
     flex: 1,
     alignSelf: "stretch",

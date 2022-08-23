@@ -8,6 +8,7 @@ const Actions = ({
   onPress,
   rowIndex,
   colIndex,
+  handleRestart,
 }) => {
   //console.warn({ arrayLen, isGameStart, bunny });
   const test = "red";
@@ -26,7 +27,7 @@ const Actions = ({
           Submit
         </Text>
       </Pressable>
-      <Pressable onClick={() => restart()} type="submit">
+      <Pressable onPress={() => handleRestart()} type="submit">
         <Text style={styles.action_restart}>Restart </Text>
       </Pressable>
     </View>
@@ -45,14 +46,13 @@ const styles = StyleSheet.create({
     backgroundColor: "blue",
     color: "#fff",
     border: 0,
-    margin: 6,
+    marginRight: 6,
   },
 
   action_restart: {
     borderRadius: 40,
     fontWeight: "bold",
     fontSize: 20,
-    marginTop: 10,
     padding: 8,
     backgroundColor: "#216c8f",
     color: "#fff",
@@ -62,7 +62,6 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     fontWeight: "bold",
     fontSize: 20,
-    marginTop: 10,
     padding: 8,
     backgroundColor: "#848484",
     color: "#fff",
@@ -70,7 +69,10 @@ const styles = StyleSheet.create({
   },
   action_wrapper: {
     flexDirection: "row",
-    marginVertical: 20,
+    marginVertical: 2,
     justifyContent: "space-between",
+    alignSelf: "stretch",
+    alignItems: "center",
+    paddingHorizontal: 10,
   },
 });
