@@ -7,6 +7,7 @@ import { SafeAreaView } from "react-native";
 import HomeScreen from "./src/screens/homeScreen";
 import { Provider } from "react-redux";
 import { store } from "./src/redux/store";
+import BottomAds from "./src/components/ads";
 export default function App() {
   const Stack = createNativeStackNavigator();
   return (
@@ -25,6 +26,7 @@ export default function App() {
           />
         </Stack.Navigator>
       </NavigationContainer>
+      <BottomAds />
     </Provider>
   );
 }

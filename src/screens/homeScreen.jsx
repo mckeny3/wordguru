@@ -21,7 +21,9 @@ import gameSlice, {
   setArrayRow,
   setBgColor,
   setColIndex,
+  setRandomWord,
   setRowIndex,
+  updateColor,
   updateGame,
   updateSuccessStats,
   updateWordLength,
@@ -32,37 +34,31 @@ import WonModel from "../components/wonModel";
 const HomeScreen = () => {
   const [fiveLetter, setFiveLetter] = useState("");
   const [result, setResult] = useState(false);
-  const [rondomWord, setRondomWord] = useState("");
   const [key, setKey] = useState([]);
   const [arrayLen, setArrayLen] = useState(5);
-  const [restartGame, setRestartGame] = useState(false);
   const [isGameStart, setIsgameStart] = useState(false);
   const [letter, setLetter] = useState();
-  const { game } = useSelector((state) => state.reducer.game);
+  const { game, ROW_ARRAY } = useSelector((state) => state.reducer.game);
   const colIndex = game.colIndex;
   const rowIndex = game.rowIndex;
-  const [gam, setGam] = useState({
-    ROW_ARRAY: new Array(6).fill(new Array(5).fill("")),
-  });
   const {} = useSelector((state) => state.reducer.user);
   const dispatch = useDispatch();
 
   useEffect(() => {
     let len = word.length;
-    setIsgameStart(true);
     len = Math.random() * len;
     len = Math.floor(len);
 
-    setRondomWord(word[len]);
-  }, [restartGame]);
+    dispatch(setRandomWord(word[len]));
+  }, [game.LEVEL]);
 
   ////entered key
   const handleKey = (item) => {
     if (colIndex < 5 && rowIndex < game.ATTEMPTS) {
-      const copy = [...gam.ROW_ARRAY.map((arr) => [...arr])];
+      const copy = [...ROW_ARRAY.map((arr) => [...arr])];
       copy[rowIndex][colIndex] = item;
       dispatch(setColIndex(colIndex + 1));
-      return setGam({ ROW_ARRAY: copy });
+      return dispatch(setArrayRow(copy));
     }
   };
 
@@ -71,47 +67,33 @@ const HomeScreen = () => {
     if (colIndex <= 0) return;
     const colIndexReverse = colIndex - 1;
     //const pop = g.splice(g.length - 1, 1);
-    let copy = [...gam.ROW_ARRAY.map((row) => [...row])];
+    let copy = [...ROW_ARRAY.map((row) => [...row])];
 
     copy[rowIndex][colIndexReverse] = "";
     dispatch(setColIndex(colIndexReverse));
     console.log({ colIndexReverse });
-    return setGam({ ROW_ARRAY: copy });
+    dispatch(setArrayRow(copy));
   };
 
   /////////HANDLIE SUBMIT
 
   const handleSubmit = () => {
-    if (rowIndex > 3) return;
-
-    /////reaveal color
-    let copy = [...gam.ROW_ARRAY.map((row, i) => [...row])];
+    if (rowIndex > game.ATTEMPTS) return;
+    dispatch(updateColor(game.ROW_ARRAY));
+    console.log("ROW", game.ROW_ARRAY);
+    if (getStringArray(ROW_ARRAY[game.rowIndex]) === game.RANDOM_WORD) {
+      console.log("correct");
+      dispatch(updateSuccessStats());
+    }
     dispatch(setRowIndex(rowIndex + 1));
     dispatch(setColIndex(0));
-    copy[rowIndex].map((item, i) => {
-      if (rondomWord[i] === item.value) {
-        if (getStringArray(gam.ROW_ARRAY[rowIndex]) === rondomWord) {
-          console.log("correct");
-          dispatch(updateSuccessStats());
-        }
-        return { ...(item.color = "green") };
-      }
-
-      if (rondomWord.includes(item.value)) {
-        console.log("included");
-        return { ...(item.color = "orange") };
-      }
-      return { ...(item.color = "grey") };
-    });
-    console.log(copy);
-    return dispatch(setArrayRow(copy));
   };
 
   ////HANDLE RESTART
   const handleRestart = () => {};
 
   const { test } = useSelector((state) => state.reducer.game);
-  console.log(game);
+  console.log(ROW_ARRAY);
   return (
     <SafeAreaView style={styles.container}>
       <ExpoStatusBar />
@@ -121,7 +103,7 @@ const HomeScreen = () => {
           <WonModel />
         </Modal>
         <ScrollView>
-          {gam.ROW_ARRAY.map((rows, rowkey) => (
+          {ROW_ARRAY.map((rows, rowkey) => (
             <View key={rowkey} style={styles.game_row}>
               {rows.map((cell, i) => (
                 <View
@@ -147,7 +129,6 @@ const HomeScreen = () => {
         rowIndex={rowIndex}
         colIndex={colIndex}
         onPress={handleSubmit}
-        row={gam.ROW_ARRAY}
         arrayLen={arrayLen}
         isGameStart={isGameStart}
         handleRestart={handleRestart}
@@ -164,11 +145,11 @@ const HomeScreen = () => {
       <Pressable
         onPress={() =>
           Platform.OS === "windows"
-            ? Alert.alert("Word Guru", rondomWord)
-            : alert(rondomWord)
+            ? Alert.alert("Word Guru", game.RANDOM_WORD)
+            : alert(game.RANDOM_WORD)
         }
       >
-        <Text>Give up!!!!{rondomWord}</Text>
+        <Text>Give up!!!!{game.RANDOM_WORD}</Text>
       </Pressable>
     </SafeAreaView>
   );
