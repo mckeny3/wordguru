@@ -1,31 +1,45 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { getStringArray } from "../helperFunctions";
+const initialState = {
+  game: {
+    MODAL_OPEN: false,
+    END: false,
+    PLAYING: false,
+    LEVEL: 1,
+    WON: false,
+    LOST: false,
+    wordLength: 5,
+    RANDOM_WORD: "",
+    colIndex: 0,
+    rowIndex: 0,
+    ATTEMPTS: 6,
+    darkMode: false,
+    INIT: false,
+  },
+
+  ROW_ARRAY: new Array(6).fill(new Array(5).fill({ value: "", color: "" })),
+  ROW_ARRAY_NEW: new Array(6).fill(
+    new Array(5).fill({ value: "", color: "#ddd" })
+  ),
+  settings: {
+    DARK_MODE: false,
+  },
+};
 
 const gameSlice = createSlice({
   name: "game",
-  initialState: {
-    game: {
-      MODAL_OPEN: false,
-      END: false,
-      PLAYING: false,
-      LEVEL: 1,
-      WON: false,
-      LOST: false,
-      wordLength: 5,
-      RANDOM_WORD: "",
-      colIndex: 0,
-      rowIndex: 0,
-      ATTEMPTS: 6,
-      darkMode: false,
-    },
-    ROW_ARRAY: new Array(6).fill(
-      new Array(5).fill({ value: "", color: "grey" })
-    ),
-    ROW_ARRAY_NEW: new Array(6).fill(
-      new Array(5).fill({ value: "", color: "grey" })
-    ),
-  },
+  initialState: initialState,
   reducers: {
+    setDarkMode: (state, action) => {
+      return {
+        ...state,
+        settings: { ...state.settings, DARK_MODE: !state.settings.DARK_MODE },
+      };
+    },
+    resetGame: (state) => (state = initialState),
+    setNewGame: (state, action) => {
+      return { ...state, game: { ...state.game, INIT: action.payload } };
+    },
     setRandomWord: (state, action) => {
       return { ...state, game: { ...state.game, RANDOM_WORD: action.payload } };
     },
@@ -47,14 +61,17 @@ const gameSlice = createSlice({
     setArrayRow: (state, action) => {
       state.ROW_ARRAY = action.payload;
     },
-    updateGame: (state, action) => {
-      state.game = action.payload;
-    },
-    updateWordLength: (state, action) => {
-      return { game, wordLength: 7 };
-    },
-    updateSuccessStats: (state, action) => {
-      return { ...state, game: { ...state.game, WON: true, MODAL_OPEN: true } };
+    endGame: (state, action) => {
+      return {
+        ...state,
+        game: {
+          ...state.game,
+          WON: action.payload.result,
+          MODAL_OPEN: action.payload.modal,
+          colIndex: action.payload.colInex,
+          rowIndex: action.payload.rowIndex,
+        },
+      };
     },
     setNextLvl: (state) => {
       return {
@@ -65,6 +82,8 @@ const gameSlice = createSlice({
           LEVEL: state.game.LEVEL + 1,
           MODAL_OPEN: false,
           WON: false,
+          colIndex: 0,
+          rowIndex: 0,
         },
       };
     },
@@ -78,15 +97,16 @@ const gameSlice = createSlice({
 });
 
 export const {
+  resetGame,
+  setDarkMode,
+
+  setNewGame,
   setRandomWord,
   updateColor,
   setArrayRow,
   setRowIndex,
   setColIndex,
-  updateWordLength,
-  updateGameState,
-  updateGame,
   setNextLvl,
-  updateSuccessStats,
+  endGame,
 } = gameSlice.actions;
 export default gameSlice.reducer;

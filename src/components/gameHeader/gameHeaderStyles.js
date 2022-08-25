@@ -1,5 +1,5 @@
+import { useTheme } from "@react-navigation/native";
 import { StyleSheet } from "react-native";
-
 export const styles = StyleSheet.create({
   gameHeader: {
     marginTop: 30,
@@ -8,8 +8,8 @@ export const styles = StyleSheet.create({
     padding: 10,
     alignSelf: "stretch",
     alignItems: "center",
-
-    marginHorizontal: 20,
+    backgroundColor: "#A9A9A9",
+    marginHorizontal: 10,
   },
   gameHeader_right: {
     flexDirection: "row",

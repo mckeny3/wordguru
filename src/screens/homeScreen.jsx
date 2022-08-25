@@ -18,19 +18,22 @@ import Actions from "../components/Action";
 import GameHeader from "../components/gameHeader";
 import ExpoStatusBar from "expo-status-bar/build/ExpoStatusBar";
 import gameSlice, {
+  endGame,
   setArrayRow,
   setBgColor,
   setColIndex,
   setRandomWord,
   setRowIndex,
   updateColor,
-  updateGame,
-  updateSuccessStats,
-  updateWordLength,
 } from "../redux/gameSlice";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+} from "react-native-reanimated";
 import { useSelector, useDispatch } from "react-redux";
 import { getStringArray } from "../helperFunctions";
 import WonModel from "../components/wonModel";
+import { updateLostStatus, updateSuccessStatus } from "../redux/userSlice";
 const HomeScreen = () => {
   const [fiveLetter, setFiveLetter] = useState("");
   const [result, setResult] = useState(false);
@@ -71,7 +74,6 @@ const HomeScreen = () => {
 
     copy[rowIndex][colIndexReverse] = "";
     dispatch(setColIndex(colIndexReverse));
-    console.log({ colIndexReverse });
     dispatch(setArrayRow(copy));
   };
 
@@ -80,25 +82,61 @@ const HomeScreen = () => {
   const handleSubmit = () => {
     if (rowIndex > game.ATTEMPTS) return;
     dispatch(updateColor(game.ROW_ARRAY));
-    console.log("ROW", game.ROW_ARRAY);
+
     if (getStringArray(ROW_ARRAY[game.rowIndex]) === game.RANDOM_WORD) {
-      console.log("correct");
-      dispatch(updateSuccessStats());
+      dispatch(
+        endGame({
+          result: true,
+          modal: true,
+          colIndex: 0,
+          rowIndex: 0,
+        })
+      );
+      dispatch(updateSuccessStatus());
+
+      dispatch(setRowIndex(rowIndex + 1));
+      dispatch(setColIndex(0));
+      return;
     }
+
+    if (
+      game.rowIndex >= 5 &&
+      getStringArray(ROW_ARRAY[game.rowIndex]) !== game.RANDOM_WORD
+    ) {
+      dispatch(
+        endGame({
+          result: false,
+          modal: true,
+          colIndex: 0,
+          rowIndex: 0,
+        })
+      );
+      dispatch(updateLostStatus());
+
+      dispatch(setRowIndex(rowIndex + 1));
+      dispatch(setColIndex(0));
+      return;
+    }
+
     dispatch(setRowIndex(rowIndex + 1));
     dispatch(setColIndex(0));
   };
 
   ////HANDLE RESTART
   const handleRestart = () => {};
+  const offset = useSharedValue(0);
 
-  const { test } = useSelector((state) => state.reducer.game);
-  console.log(ROW_ARRAY);
+  const animatedStyles = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: offset.value * 255 }],
+    };
+  });
+  console.log(game.WON);
   return (
     <SafeAreaView style={styles.container}>
       <ExpoStatusBar />
       <GameHeader />
-      <View style={styles.game_wrapper}>
+      <View style={[styles.game_wrapper, animatedStyles]}>
         <Modal transparent={true} visible={game.MODAL_OPEN}>
           <WonModel />
         </Modal>
@@ -109,11 +147,16 @@ const HomeScreen = () => {
                 <View
                   key={i}
                   style={[
+                    animatedStyles,
                     styles.game_cell,
                     {
-                      backgroundColor: cell.color ? cell.color : "#61dafb",
+                      backgroundColor: cell.color ? cell.color : "",
                       borderColor:
-                        colIndex === i && rowIndex === rowkey ? "red" : "",
+                        colIndex === i && rowIndex === rowkey
+                          ? "rgb(161, 162, 139)"
+                          : "black",
+                      borderWidth:
+                        colIndex === i && rowIndex === rowkey ? 4 : 4,
                     },
                   ]}
                 >
@@ -163,7 +206,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "column",
-    //backgroundColor: "indigo",
+    backgroundColor: "#ddd",
     flex: 1,
   },
   game_row: {
@@ -174,7 +217,7 @@ const styles = StyleSheet.create({
   game_cell: {
     borderRadius: 10,
     flex: 1,
-    margin: 3,
+    margin: 2,
     aspectRatio: 1,
     maxWidth: 50,
     borderWidth: 2,
@@ -188,14 +231,13 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   game_wrapper: {
-    backgroundColor: "#ffffff",
+    backgroundColor: "#grey",
 
     flex: 1,
     alignSelf: "stretch",
   },
 
   word_selected: {
-    backgroundColor: "#61dafb",
     color: "white",
     height: 32,
     width: 32,

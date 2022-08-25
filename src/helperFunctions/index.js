@@ -6,3 +6,9 @@ export const getStringArray = (array) => {
   }
   return string;
 };
+// /////get percentage
+
+export const getPercentage = (num1, num2) => {
+  const per = (num1 / num2) * 100;
+  return Math.floor(per);
+};

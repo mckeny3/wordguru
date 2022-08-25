@@ -1,13 +1,15 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Switch, Text, View } from "react-native";
 import React from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
-import { setNextLvl } from "../../redux/gameSlice";
+import { setDarkMode, setNextLvl } from "../../redux/gameSlice";
 import { updateSuccessStatus } from "../../redux/userSlice";
 import { getPercentage } from "../../helperFunctions";
+import { useTheme } from "@react-navigation/native";
+import { useState } from "react";
 
-const WonModel = () => {
-  const { game } = useSelector((state) => state.reducer.game);
+const SettingsModal = () => {
+  const { game, settings } = useSelector((state) => state.reducer.game);
   const { user } = useSelector((state) => state.reducer.user);
   const dispatch = useDispatch();
 
@@ -15,6 +17,13 @@ const WonModel = () => {
     dispatch(setNextLvl());
   };
 
+  const [isEnabled, setIsEnabled] = useState(false);
+  const toggleSwitch = () => {
+    setIsEnabled((previousState) => !previousState);
+
+    dispatch(setDarkMode());
+  };
+  const { colors } = useTheme();
   return (
     <View style={styles.modelContainer}>
       <View style={styles.modelWrapper}>
@@ -22,60 +31,19 @@ const WonModel = () => {
           <Ionicons style={styles.close_text} name="close" />
         </Pressable>
         <View style={styles.result_wrapper}>
-          {game.WON ? (
-            <Text style={styles.result_textStyle}>Congratulation!</Text>
-          ) : (
-            <Text
-              style={[
-                styles.result_textStyle,
-                { color: game.WON ? "orange" : "red" },
-              ]}
-            >
-              You're out of guesses!
-            </Text>
-          )}
-          <Text style={styles.result_answer_textStyle}>
-            The answer is {game.RANDOM_WORD}!
-          </Text>
+          <Text style={[styles.result_textStyle]}>SETTINGS</Text>
         </View>
-        <View style={styles.game_stats}>
-          <View style={styles.game_stats.played}>
-            <Text style={styles.game_stats.played.num}> {user.PLAYED}</Text>
 
-            <Text style={styles.game_stats.played.text}> played</Text>
-          </View>
-          <View style={styles.game_stats.played}>
-            <Text style={styles.game_stats.played.num}>
-              {getPercentage(user.WON, user.PLAYED)}%
-            </Text>
-
-            <Text style={styles.game_stats.played.text}> Win</Text>
-          </View>
-          <View style={styles.game_stats.played}>
-            <Text style={styles.game_stats.played.num}> {user.STREAK}</Text>
-
-            <Text style={styles.game_stats.played.text}>
-              Current{`\n`}Streak
-            </Text>
-          </View>
-          <View style={styles.game_stats.played}>
-            <Text style={styles.game_stats.played.num}> {user.MAX_STREAK}</Text>
-
-            <Text style={styles.game_stats.played.text}>Best{`\n`}Streak</Text>
-          </View>
-        </View>
         <View style={styles.bottom_action_wrapper}>
-          <Pressable style={[styles.button, styles.button_next]}>
-            <Text style={styles.action_next_text}>Retry</Text>
-          </Pressable>
-          <Pressable
-            onPress={() => handleNext()}
-            style={[styles.button, styles.button_next]}
-          >
-            <Text style={styles.action_next_text}>Next</Text>
-          </Pressable>
-          <Pressable style={[styles.button, styles.button_next]}>
-            <Text style={styles.action_next_text}>Share</Text>
+          <Pressable style={[styles.switch_wrapper]}>
+            <Text style={styles.switch_text}>Dark Mode</Text>
+            <Switch
+              trackColor={{ false: "#767577", true: "#81b0ff" }}
+              thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={toggleSwitch}
+              value={isEnabled}
+            />
           </Pressable>
         </View>
       </View>
@@ -83,7 +51,7 @@ const WonModel = () => {
   );
 };
 
-export default WonModel;
+export default SettingsModal;
 
 const styles = StyleSheet.create({
   modelContainer: {
@@ -108,7 +76,15 @@ const styles = StyleSheet.create({
 
     shadowRadius: 4,
   },
-
+  switch_text: {
+    fontWeight: "bold",
+    fontSize: 20,
+  },
+  switch_wrapper: {
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+  },
   game_stats: {
     marginTop: 100,
     borderWidth: 1,

@@ -43,8 +43,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "column",
-    marginTop: 10,
-    marginHorizontal: 10,
+    marginHorizontal: "auto",
   },
 
   letter: {
@@ -61,12 +60,20 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     borderRadius: 6,
     margin: 2,
-    fontSize: 20,
+    fontSize: 26,
     alignSelf: "stretch",
-    backgroundColor: "#fff",
+    backgroundColor: "#514949",
     alignItems: "center",
     justifyContent: "center",
-    padding: 8,
+    padding: 6,
+    color: "white",
+    elevation: 60,
+    shadowColor: "black",
+    shadowOffset: {
+      width: 6,
+
+      height: 6,
+    },
   },
   row: {
     alignSelf: "stretch",

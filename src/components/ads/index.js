@@ -1,27 +1,25 @@
+import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-import { Text, StyleSheet, useColorScheme, View } from "react-native";
 
-const App = () => {
+const BottomAds = () => {
   return (
-    <View
-      style={[
-        styles.box,
-        {
-          transform: [{ translateX: 50 }],
-        },
-      ]}
-    >
-      <Text style={styles.text}>TranslateX by -50 </Text>
+    <View style={styles.Wrapper}>
+      <Text style={styles.textStyle}>face book ads</Text>
     </View>
   );
 };
 
+export default BottomAds;
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  Wrapper: {
+    backgroundColor: "grey",
+    alignContent: "center",
     alignItems: "center",
-    justifyContent: "center",
+    height: 30,
+  },
+  textStyle: {
+    color: "orange",
+    textAlign: "center",
   },
 });
-
-export default App;
