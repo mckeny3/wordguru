@@ -12,7 +12,6 @@ export default function App() {
       <Provider store={store}>
         <Root />
       </Provider>
-      <BottomAds />
     </>
   );
 }

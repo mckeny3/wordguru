@@ -15,21 +15,42 @@ const initialState = {
     ATTEMPTS: 6,
     darkMode: false,
     INIT: false,
+    KEY_COLOR: [],
   },
-
-  ROW_ARRAY: new Array(6).fill(new Array(5).fill({ value: "", color: "" })),
+  ROW_ARRAY: new Array(6).fill(
+    new Array(5).fill({ value: "", color: "'yellow" })
+  ),
   ROW_ARRAY_NEW: new Array(6).fill(
     new Array(5).fill({ value: "", color: "#ddd" })
   ),
   settings: {
     DARK_MODE: false,
   },
+  keyboard: [
+    ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
+    ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
+
+    ["Z", "X", "C", "V", "B", "N", "M", "DEL"],
+  ],
 };
 
 const gameSlice = createSlice({
   name: "game",
   initialState: initialState,
   reducers: {
+    setKeysColor: (state, actions) => {
+      let copy = [...state.keyboard.map((row) => [...row])];
+
+      copy.map((row) =>
+        row.map((keys) => {
+          if (keys === "A") {
+            console.log("match");
+
+            return { ...(keys.color = "red") };
+          }
+        })
+      );
+    },
     setDarkMode: (state, action) => {
       return {
         ...state,
@@ -52,8 +73,9 @@ const gameSlice = createSlice({
         }
 
         if (state.game.RANDOM_WORD.includes(row.value)) {
-          console.log("included");
           return { ...(row.color = "orange") };
+        }
+        if (!state.game.RANDOM_WORD.includes(row.value)) {
         }
         return { ...(row.color = "grey") };
       });
@@ -99,7 +121,7 @@ const gameSlice = createSlice({
 export const {
   resetGame,
   setDarkMode,
-
+  setKeysColor,
   setNewGame,
   setRandomWord,
   updateColor,

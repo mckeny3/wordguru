@@ -22,6 +22,7 @@ import gameSlice, {
   setArrayRow,
   setBgColor,
   setColIndex,
+  setKeysColor,
   setRandomWord,
   setRowIndex,
   updateColor,
@@ -34,6 +35,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { getStringArray } from "../helperFunctions";
 import WonModel from "../components/wonModel";
 import { updateLostStatus, updateSuccessStatus } from "../redux/userSlice";
+import { useTheme } from "@react-navigation/native";
 const HomeScreen = () => {
   const [fiveLetter, setFiveLetter] = useState("");
   const [result, setResult] = useState(false);
@@ -46,6 +48,7 @@ const HomeScreen = () => {
   const rowIndex = game.rowIndex;
   const {} = useSelector((state) => state.reducer.user);
   const dispatch = useDispatch();
+  const [keyValue, setKeyValue] = useState([]);
 
   useEffect(() => {
     let len = word.length;
@@ -82,6 +85,20 @@ const HomeScreen = () => {
   const handleSubmit = () => {
     if (rowIndex > game.ATTEMPTS) return;
     dispatch(updateColor(game.ROW_ARRAY));
+    dispatch(setKeysColor());
+    const array = ROW_ARRAY[game.rowIndex].map((row, i) => {
+      if (game.RANDOM_WORD[i] === row.value) {
+        return { color: "green", key: row.value };
+      }
+
+      if (game.RANDOM_WORD.includes(row.value)) {
+        return { color: "orange", key: row.value };
+      }
+      if (!game.RANDOM_WORD.includes(row.value)) {
+        return { color: "grey", key: row.value };
+      }
+    });
+    setKeyValue(array);
 
     if (getStringArray(ROW_ARRAY[game.rowIndex]) === game.RANDOM_WORD) {
       dispatch(
@@ -131,12 +148,19 @@ const HomeScreen = () => {
       transform: [{ translateX: offset.value * 255 }],
     };
   });
-  console.log(game.WON);
+
+  const { colors } = useTheme();
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, {}]}>
       <ExpoStatusBar />
       <GameHeader />
-      <View style={[styles.game_wrapper, animatedStyles]}>
+      <View
+        style={[
+          styles.game_wrapper,
+          animatedStyles,
+          { backgroundColor: colors.background },
+        ]}
+      >
         <Modal transparent={true} visible={game.MODAL_OPEN}>
           <WonModel />
         </Modal>
@@ -150,17 +174,19 @@ const HomeScreen = () => {
                     animatedStyles,
                     styles.game_cell,
                     {
-                      backgroundColor: cell.color ? cell.color : "",
+                      backgroundColor: cell.color ? cell.color : colors.card,
                       borderColor:
                         colIndex === i && rowIndex === rowkey
                           ? "rgb(161, 162, 139)"
-                          : "black",
+                          : colors.border,
                       borderWidth:
-                        colIndex === i && rowIndex === rowkey ? 4 : 4,
+                        colIndex === i && rowIndex === rowkey ? 2 : 2,
                     },
                   ]}
                 >
-                  <Text style={styles.cell_letter}>{cell.value} </Text>
+                  <Text style={[styles.cell_letter, { color: colors.text }]}>
+                    {cell.value}
+                  </Text>
                 </View>
               ))}
             </View>
@@ -168,32 +194,15 @@ const HomeScreen = () => {
         </ScrollView>
       </View>
 
-      <Actions
-        rowIndex={rowIndex}
-        colIndex={colIndex}
-        onPress={handleSubmit}
-        arrayLen={arrayLen}
-        isGameStart={isGameStart}
-        handleRestart={handleRestart}
-      />
-
       <Keyboard
+        keyValue={keyValue}
+        handleSubmit={handleSubmit}
         setLetter={setLetter}
         handleKey={handleKey}
         g={key}
         setKey={setKey}
         handleDelete={handleDelete}
       />
-      {/*  */}
-      <Pressable
-        onPress={() =>
-          Platform.OS === "windows"
-            ? Alert.alert("Word Guru", game.RANDOM_WORD)
-            : alert(game.RANDOM_WORD)
-        }
-      >
-        <Text>Give up!!!!{game.RANDOM_WORD}</Text>
-      </Pressable>
     </SafeAreaView>
   );
 };
@@ -203,21 +212,18 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
     alignItems: "center",
-    flexDirection: "column",
-    backgroundColor: "#ddd",
-    flex: 1,
+    justifyContent: "space-between",
   },
   game_row: {
     flexDirection: "row",
-    margin: 3,
+    alignSelf: "stretch",
     justifyContent: "center",
   },
   game_cell: {
     borderRadius: 10,
     flex: 1,
-    margin: 2,
+    margin: 3,
     aspectRatio: 1,
     maxWidth: 50,
     borderWidth: 2,
@@ -228,30 +234,15 @@ const styles = StyleSheet.create({
     fontSize: 30,
     padding: 2,
     fontWeight: "bold",
-    color: "#fff",
   },
   game_wrapper: {
-    backgroundColor: "#grey",
-
-    flex: 1,
     alignSelf: "stretch",
   },
 
   word_selected: {
     color: "white",
-    height: 32,
-    width: 32,
-    /*   color: white;
-  background-color: #61dafb;
-  border-radius: 0.50rem;
-
-  height: 2.4rem;
-  width: 2.4rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;*/
     fontWeight: "900",
-    fontSize: 20,
+    fontSize: 32,
   },
 });
 

@@ -1,23 +1,75 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Dimensions, Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
-import { keyboard } from "../../data";
+/* import { keyboard } from "../../data";
+ */ import { styles } from "./keyboardStyles.js";
+import { useTheme } from "@react-navigation/native";
+import { useSelector } from "react-redux";
+import Actions from "../Action";
+import { useState } from "react";
 
-const Keyboard = ({ handleKey, handleDelete }) => {
+const Keyboard = ({ handleKey, handleDelete, handleSubmit, keyValue }) => {
+  const { colors } = useTheme();
+  const { keyboard, game, ROW_ARRAY, KEY_COLOR } = useSelector(
+    (state) => state.reducer.game
+  );
+
+  const letterColor = () => {
+    const res = ROW_ARRAY[game.rowIndex].map((row) => {
+      return { ...row };
+    });
+
+    return res;
+  };
+
+  console.log(letterColor());
+
+  const getKeyColor = (key) => {
+    let res = keyValue.map((item) => {
+      if (key === item.key) {
+        return item.color;
+      }
+    });
+
+    if (res.includes("green")) {
+      return "green";
+    }
+    if (res.includes("orange")) {
+      return "orange";
+    }
+    if (res.includes("grey")) {
+      return "grey";
+    }
+    return colors.border;
+  };
+  console.log(keyboard);
+
   return (
-    <View style={styles.letter_wrapper}>
+    <View style={styles.keyboardWrapper}>
+      <Actions
+        rowIndex={game.rowIndex}
+        colIndex={game.colIndex}
+        onPress={handleSubmit}
+      />
+
       {keyboard.map((item, i) => (
         <View key={i} style={styles.row}>
           {item.map((key, i) => (
             <Pressable
+              style={[
+                styles.letter_wrapper,
+                {
+                  backgroundColor: getKeyColor(key),
+                },
+              ]}
               key={i}
               onPress={() =>
                 key === "DEL"
                   ? handleDelete()
-                  : handleKey({ id: i, value: key, color: "" })
+                  : handleKey({ value: key, color: "" })
               }
               // style={styles.letter}
             >
-              <Text style={styles.letter}> {key}</Text>
+              <Text style={[styles.letter, { color: key.color }]}>{key}</Text>
             </Pressable>
           ))}
         </View>
@@ -27,58 +79,3 @@ const Keyboard = ({ handleKey, handleDelete }) => {
 };
 
 export default Keyboard;
-
-const styles = StyleSheet.create({
-  letter_wrapper: {
-    /*     marginTop: 10,
-    justifyContent: "center",
-    alignSelf: "stretch",
-    padding: 10,
-    flex: 1,
-    backgroundColor: "blue",
-    flexDirection: "column",
-    height: 40, */
-    padding: 10,
-    alignSelf: "stretch",
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "column",
-    marginHorizontal: "auto",
-  },
-
-  letter: {
-    // backgroundColor: "red",
-    /*     width: "20%",
-    alignSelf: "stretch",
-    flexDirection: "column",
-    alignItems: "center",
-    padding: 10,
-    width: 10,
-    fontWeight: 900,
-    fontSize: 10,
-    margin: 2, */
-    fontWeight: "bold",
-    borderRadius: 6,
-    margin: 2,
-    fontSize: 26,
-    alignSelf: "stretch",
-    backgroundColor: "#514949",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 6,
-    color: "white",
-    elevation: 60,
-    shadowColor: "black",
-    shadowOffset: {
-      width: 6,
-
-      height: 6,
-    },
-  },
-  row: {
-    alignSelf: "stretch",
-    margin: 4,
-    justifyContent: "center",
-    flexDirection: "row",
-  },
-});

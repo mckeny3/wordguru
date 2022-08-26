@@ -3,7 +3,7 @@ const initialState = {
   user: {
     USER_NAME: null,
     LEVEL: 0,
-    STARS: 0,
+    STARS: 100,
     WON: 0,
     LOST: 0,
     PLAYED: 0,
@@ -40,7 +40,6 @@ const userSlice = createSlice({
           LOST: state.user.LOST + 1,
           PLAYED: state.user.PLAYED + 1,
           STREAK: 0,
-          MAX_STREAK: state.user.MAX_STREAK + 1,
         },
       };
     },
