@@ -1,12 +1,22 @@
-import { View, Text, Image, SafeAreaView, Pressable } from "react-native";
-import React from "react";
+import {
+  View,
+  Text,
+  Image,
+  SafeAreaView,
+  Pressable,
+  Modal,
+} from "react-native";
+import React, { useState } from "react";
 import { styles } from "./gameHeaderStyles.js";
 import { STAR_PNG } from "../../constans.js";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigation, useTheme } from "@react-navigation/native";
+import SettingsModal from "../settingsModal/index.jsx";
 
 const GameHeader = () => {
+  const [visible, setVisible] = useState(false);
+  const [isSettingsModalOpen, toggleSettingsModal] = useState(false);
   const { game } = useSelector((state) => state.reducer.game);
   const { user } = useSelector((state) => state.reducer.user);
   const dispatch = useDispatch();
@@ -14,6 +24,9 @@ const GameHeader = () => {
   const navigation = useNavigation();
   return (
     <SafeAreaView style={[styles.gameHeader]}>
+      <Modal transparent={true} visible={isSettingsModalOpen}>
+        <SettingsModal toggle={toggleSettingsModal} />
+      </Modal>
       <View style={[styles.gameHeader_left, { backgroundColor: colors.card }]}>
         <Pressable onPress={() => navigation.navigate("welcomeScreen")}>
           <Ionicons
@@ -24,7 +37,7 @@ const GameHeader = () => {
           />
         </Pressable>
 
-        <Pressable onPress={() => navigation.navigate("welcomeScreen")}>
+        <Pressable onPress={() => toggleSettingsModal((prev) => !prev)}>
           <Ionicons
             color={colors.primary}
             size={30}

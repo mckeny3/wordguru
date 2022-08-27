@@ -5,23 +5,20 @@ import {
   View,
   SafeAreaView,
   Modal,
+  Image,
+  TextInput,
 } from "react-native";
-import React, { useEffect } from "react";
-import { DarkTheme, useNavigation, useTheme } from "@react-navigation/native";
-import HomeScreen from "./homeScreen";
+import React from "react";
+import { useNavigation, useTheme } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
-import { endGame, resetGame, setNewGame } from "../redux/gameSlice";
+import { resetGame, setNewGame } from "../redux/gameSlice";
 import CustomAlert from "../components/custumAlert";
-import useAlert from "../components/custumAlert";
-import CustumAlert from "../components/custumAlert";
 import { useState } from "react";
-import { resetUserStats } from "../redux/userSlice";
-import { MyTheme } from "../theme";
+import userSlice, { resetUserStats } from "../redux/userSlice";
 import SettingsModal from "../components/settingsModal";
-import { useFonts, Inter_900Black } from "@expo-google-fonts/inter";
-import { useCallback } from "react";
-import * as SplashScreen from "expo-splash-screen";
 import { getPercentage } from "../helperFunctions";
+import { singInWithGoogle } from "../services/firebase";
+import Loginform from "../components/login";
 
 const WelcomeScreen = () => {
   const { game } = useSelector((state) => state.reducer.game);
@@ -32,6 +29,9 @@ const WelcomeScreen = () => {
   const dispatch = useDispatch();
   const { colors } = useTheme();
   const { color } = useTheme();
+
+  const [text, onChangeText] = React.useState("Useless Text");
+  const [number, onChangeNumber] = React.useState(null);
   const handleNewGame = (value) => {
     if (!game.INIT) {
       dispatch(setNewGame(true));
@@ -129,93 +129,132 @@ const WelcomeScreen = () => {
           ))}
         </View>
         {alert}
-        <View style={styles.option_wrapper}>
-          <Pressable
-            style={[styles.button, { backgroundColor: colors.primary }]}
-            onPress={() => handleNewGame()}
-          >
-            <Text style={styles.text}>New Game</Text>
-          </Pressable>
 
-          {game.INIT && (
-            <Pressable
-              style={[styles.button, { backgroundColor: colors.primary }]}
-              onPress={() => navigate.navigate("Home")}
-            >
-              <Text style={[styles.text]}>Continue</Text>
-            </Pressable>
-          )}
-          <Pressable
-            style={[styles.button, { backgroundColor: colors.primary }]}
-            onPress={() => toggleSettingsModal((prev) => !prev)}
-          >
-            <Text style={styles.text}>SETTINGS</Text>
-          </Pressable>
-        </View>
-        {/* stats */}
+        {!user ? (
+          <>
+            <View style={styles.option_wrapper}>
+              <Pressable
+                style={[styles.button, { backgroundColor: colors.primary }]}
+                onPress={() => handleNewGame()}
+              >
+                <Text style={styles.text}>New Game</Text>
+              </Pressable>
 
-        <View
-          style={[
-            styles.game_stats,
-            {
-              borderColor: colors.border,
-              backgroundColor: colors.card,
-            },
-          ]}
-        >
-          <View style={[styles.game_stats.played, { color: colors.primary }]}>
-            <Text
-              style={[styles.game_stats.played.num, { color: colors.primary }]}
+              {game.INIT && (
+                <Pressable
+                  style={[styles.button, { backgroundColor: colors.primary }]}
+                  onPress={() => navigate.navigate("Home")}
+                >
+                  <Text style={[styles.text]}>Continue</Text>
+                </Pressable>
+              )}
+              <Pressable
+                style={[styles.button, { backgroundColor: colors.primary }]}
+                onPress={() => toggleSettingsModal((prev) => !prev)}
+              >
+                <Text style={styles.text}>SETTINGS</Text>
+              </Pressable>
+            </View>
+            <View
+              style={[
+                styles.game_stats,
+                {
+                  borderColor: colors.border,
+                  backgroundColor: colors.card,
+                },
+              ]}
             >
-              {user.PLAYED}
-            </Text>
+              <View
+                style={[styles.game_stats.played, { color: colors.primary }]}
+              >
+                <Text
+                  style={[
+                    styles.game_stats.played.num,
+                    { color: colors.primary },
+                  ]}
+                >
+                  {user.PLAYED}
+                </Text>
 
-            <Text
-              style={[styles.game_stats.played.text, { color: colors.primary }]}
-            >
-              played
-            </Text>
+                <Text
+                  style={[
+                    styles.game_stats.played.text,
+                    { color: colors.primary },
+                  ]}
+                >
+                  played
+                </Text>
+              </View>
+              <View
+                style={[styles.game_stats.played, { color: colors.primary }]}
+              >
+                <Text
+                  style={[
+                    styles.game_stats.played.num,
+                    { color: colors.primary },
+                  ]}
+                >
+                  {getPercentage(user.WON, user.PLAYED)}%
+                </Text>
+
+                <Text
+                  style={[
+                    styles.game_stats.played.text,
+                    { color: colors.primary },
+                  ]}
+                >
+                  Win
+                </Text>
+              </View>
+              <View
+                style={[styles.game_stats.played, { color: colors.primary }]}
+              >
+                <Text
+                  style={[
+                    styles.game_stats.played.num,
+                    { color: colors.primary },
+                  ]}
+                >
+                  {user.STREAK}
+                </Text>
+
+                <Text
+                  style={[
+                    styles.game_stats.played.text,
+                    { color: colors.primary },
+                  ]}
+                >
+                  Current{`\n`}Streak
+                </Text>
+              </View>
+              <View
+                style={[styles.game_stats.played, { color: colors.primary }]}
+              >
+                <Text
+                  style={[
+                    styles.game_stats.played.num,
+                    { color: colors.primary },
+                  ]}
+                >
+                  {user.MAX_STREAK}
+                </Text>
+
+                <Text
+                  style={[
+                    styles.game_stats.played.text,
+                    { color: colors.primary },
+                  ]}
+                >
+                  Best{`\n`}Streak
+                </Text>
+              </View>
+            </View>
+          </>
+        ) : (
+          <View>
+            <Loginform />
           </View>
-          <View style={[styles.game_stats.played, { color: colors.primary }]}>
-            <Text
-              style={[styles.game_stats.played.num, { color: colors.primary }]}
-            >
-              {getPercentage(user.WON, user.PLAYED)}%
-            </Text>
-
-            <Text
-              style={[styles.game_stats.played.text, { color: colors.primary }]}
-            >
-              Win
-            </Text>
-          </View>
-          <View style={[styles.game_stats.played, { color: colors.primary }]}>
-            <Text
-              style={[styles.game_stats.played.num, { color: colors.primary }]}
-            >
-              {user.STREAK}
-            </Text>
-
-            <Text
-              style={[styles.game_stats.played.text, { color: colors.primary }]}
-            >
-              Current{`\n`}Streak
-            </Text>
-          </View>
-          <View style={[styles.game_stats.played, { color: colors.primary }]}>
-            <Text
-              style={[styles.game_stats.played.num, { color: colors.primary }]}
-            >
-              {user.MAX_STREAK}
-            </Text>
-
-            <Text
-              style={[styles.game_stats.played.text, { color: colors.primary }]}
-            >
-              Best{`\n`}Streak
-            </Text>
-          </View>
-        </View>
+        )}
       </View>
     </SafeAreaView>
   );
@@ -301,5 +340,11 @@ const styles = StyleSheet.create({
 
       num: { fontWeight: "bold", fontSize: 20 },
     },
+  },
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
   },
 });

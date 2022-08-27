@@ -12,3 +12,10 @@ web-build/
 .data
 # macOS
 .DS_Store
+
+/env
+/secret
+/secret.jk
+secret/
+/firebase
+firebase/

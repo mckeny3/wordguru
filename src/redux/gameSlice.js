@@ -18,7 +18,7 @@ const initialState = {
     KEY_COLOR: [],
   },
   ROW_ARRAY: new Array(6).fill(
-    new Array(5).fill({ value: "", color: "'yellow" })
+    new Array(5).fill({ value: "", color: "transparent" })
   ),
   ROW_ARRAY_NEW: new Array(6).fill(
     new Array(5).fill({ value: "", color: "#ddd" })
@@ -27,10 +27,41 @@ const initialState = {
     DARK_MODE: false,
   },
   keyboard: [
-    ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
-    ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
+    [
+      { value: "Q", k_color: "transparent", color: "" },
+      { value: "W", k_color: "transparent", color: "" },
+      { value: "E", k_color: "transparent", color: "" },
+      { value: "R", k_color: "transparent", color: "" },
+      { value: "T", k_color: "transparent", color: "" },
+      { value: "Y", k_color: "transparent", color: "" },
+      { value: "U", k_color: "transparent", color: "" },
+      { value: "I", k_color: "transparent", color: "" },
+      { value: "O", k_color: "transparent", color: "" },
+      { value: "P", k_color: "transparent", color: "" },
+    ],
+    [
+      { value: "A", k_color: "transparent", color: "" },
+      { value: "S", k_color: "transparent", color: "" },
+      { value: "D", k_color: "transparent", color: "" },
+      { value: "F", k_color: "transparent", color: "" },
+      { value: "G", k_color: "transparent", color: "" },
+      { value: "H", k_color: "transparent", color: "" },
+      { value: "J", k_color: "transparent", color: "" },
+      { value: "K", k_color: "transparent", color: "" },
+      { value: "L", k_color: "transparent", color: "" },
+    ],
 
-    ["Z", "X", "C", "V", "B", "N", "M", "DEL"],
+    [
+      { value: "Z", k_color: "transparent", color: "" },
+      { value: "X", k_color: "transparent", color: "" },
+      { value: "C", k_color: "transparent", color: "" },
+      { value: "V", k_color: "transparent", color: "" },
+      { value: "B", k_color: "transparent", color: "" },
+      { value: "N", k_color: "transparent", color: "" },
+      { value: "M", k_color: "transparent", color: "" },
+      { value: "D", k_color: "transparent", color: "" },
+      { value: "DEL", k_color: "transparent", color: "" },
+    ],
   ],
 };
 
@@ -38,19 +69,7 @@ const gameSlice = createSlice({
   name: "game",
   initialState: initialState,
   reducers: {
-    setKeysColor: (state, actions) => {
-      let copy = [...state.keyboard.map((row) => [...row])];
-
-      copy.map((row) =>
-        row.map((keys) => {
-          if (keys === "A") {
-            console.log("match");
-
-            return { ...(keys.color = "red") };
-          }
-        })
-      );
-    },
+    setKeysColor: (state, actions) => {},
     setDarkMode: (state, action) => {
       return {
         ...state,
@@ -69,15 +88,41 @@ const gameSlice = createSlice({
 
       copy[state.game.rowIndex].map((row, i) => {
         if (state.game.RANDOM_WORD[i] === row.value) {
+          state.keyboard.map((keysRow) =>
+            keysRow.map((key) => {
+              if (row.value.includes(key.value)) {
+                return { ...(key.k_color = "green") };
+              }
+            })
+          );
           return { ...(row.color = "green") };
         }
 
         if (state.game.RANDOM_WORD.includes(row.value)) {
+          state.keyboard.map((keysRow) =>
+            keysRow.map((key) => {
+              if (row.value.includes(key.value) && key.k_color !== "green") {
+                return { ...(key.k_color = "orange") };
+              }
+            })
+          );
+
           return { ...(row.color = "orange") };
         }
         if (!state.game.RANDOM_WORD.includes(row.value)) {
+          state.keyboard.map((keysRow) =>
+            keysRow.map((key) => {
+              if (row.value === key.value) {
+                /*                 return { ...(key.k_color = "grey") };
+                 */
+                console.log("word not included", row.value);
+                return { ...(key.k_color = "grey") };
+              }
+            })
+          );
+
+          return { ...(row.color = "grey") };
         }
-        return { ...(row.color = "grey") };
       });
     },
     setArrayRow: (state, action) => {
@@ -98,7 +143,9 @@ const gameSlice = createSlice({
     setNextLvl: (state) => {
       return {
         ...state,
-        ROW_ARRAY: state.ROW_ARRAY_NEW,
+        ROW_ARRAY: initialState.ROW_ARRAY,
+        keyboard: initialState.keyboard,
+
         game: {
           ...state.game,
           LEVEL: state.game.LEVEL + 1,

@@ -25,9 +25,9 @@ export const MyTheme = {
 };
 export const darkTheme = {
   colors: {
-    background: "rgb(1, 1, 1)",
+    background: "#181818",
     border: "rgb(39, 39, 41)",
-    card: "rgb(18, 18, 18)",
+    card: "#606060",
     notification: "rgb(255, 69, 58)",
     primary: "rgb(10, 132, 255)",
     buttonActive: "rgb(10, 132, 255)",

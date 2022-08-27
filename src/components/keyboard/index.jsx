@@ -1,7 +1,7 @@
 import { Dimensions, Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
 /* import { keyboard } from "../../data";
- */ import { styles } from "./keyboardStyles.js";
+ */ import { keyWidth, styles } from "./keyboardStyles.js";
 import { useTheme } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 import Actions from "../Action";
@@ -12,36 +12,6 @@ const Keyboard = ({ handleKey, handleDelete, handleSubmit, keyValue }) => {
   const { keyboard, game, ROW_ARRAY, KEY_COLOR } = useSelector(
     (state) => state.reducer.game
   );
-
-  const letterColor = () => {
-    const res = ROW_ARRAY[game.rowIndex].map((row) => {
-      return { ...row };
-    });
-
-    return res;
-  };
-
-  console.log(letterColor());
-
-  const getKeyColor = (key) => {
-    let res = keyValue.map((item) => {
-      if (key === item.key) {
-        return item.color;
-      }
-    });
-
-    if (res.includes("green")) {
-      return "green";
-    }
-    if (res.includes("orange")) {
-      return "orange";
-    }
-    if (res.includes("grey")) {
-      return "grey";
-    }
-    return colors.border;
-  };
-  console.log(keyboard);
 
   return (
     <View style={styles.keyboardWrapper}>
@@ -58,18 +28,17 @@ const Keyboard = ({ handleKey, handleDelete, handleSubmit, keyValue }) => {
               style={[
                 styles.letter_wrapper,
                 {
-                  backgroundColor: getKeyColor(key),
+                  backgroundColor:
+                    key.k_color === "transparent" ? colors.border : key.k_color,
                 },
               ]}
               key={i}
               onPress={() =>
-                key === "DEL"
-                  ? handleDelete()
-                  : handleKey({ value: key, color: "" })
+                key.value === "DEL" ? handleDelete() : handleKey(key)
               }
               // style={styles.letter}
             >
-              <Text style={[styles.letter, { color: key.color }]}>{key}</Text>
+              <Text style={[styles.letter]}>{key.value}</Text>
             </Pressable>
           ))}
         </View>

@@ -1,18 +1,20 @@
-import { DarkTheme, NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StyleSheet, useColorScheme } from "react-native";
 import { useSelector } from "react-redux";
 import BottomAds from "./components/ads";
 import HomeScreen from "./screens/homeScreen";
 import WelcomeScreen from "./screens/welcomeScreen";
-import { MyTheme } from "./theme";
+import { darkTheme, MyTheme } from "./theme";
+
 export default function Root() {
   const Stack = createNativeStackNavigator();
   const scheme = useColorScheme();
   const { settings } = useSelector((state) => state.reducer.game);
+
   return (
     <>
-      <NavigationContainer theme={settings.DARK_MODE ? DarkTheme : MyTheme}>
+      <NavigationContainer theme={settings.DARK_MODE ? darkTheme : MyTheme}>
         <Stack.Navigator>
           <Stack.Screen
             name="welcomeScreen"

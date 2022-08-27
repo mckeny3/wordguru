@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
   keyboardWrapper: {},
   letter_wrapper: {
     maxWidth: 100,
-    maxHeight: 100,
+    maxHeight: 150,
 
     /*     marginTop: 10,
       justifyContent: "center",

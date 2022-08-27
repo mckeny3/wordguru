@@ -43,7 +43,9 @@ const HomeScreen = () => {
   const [arrayLen, setArrayLen] = useState(5);
   const [isGameStart, setIsgameStart] = useState(false);
   const [letter, setLetter] = useState();
-  const { game, ROW_ARRAY } = useSelector((state) => state.reducer.game);
+  const { game, ROW_ARRAY, keyboard } = useSelector(
+    (state) => state.reducer.game
+  );
   const colIndex = game.colIndex;
   const rowIndex = game.rowIndex;
   const {} = useSelector((state) => state.reducer.user);
@@ -64,6 +66,7 @@ const HomeScreen = () => {
       const copy = [...ROW_ARRAY.map((arr) => [...arr])];
       copy[rowIndex][colIndex] = item;
       dispatch(setColIndex(colIndex + 1));
+
       return dispatch(setArrayRow(copy));
     }
   };
@@ -85,20 +88,6 @@ const HomeScreen = () => {
   const handleSubmit = () => {
     if (rowIndex > game.ATTEMPTS) return;
     dispatch(updateColor(game.ROW_ARRAY));
-    dispatch(setKeysColor());
-    const array = ROW_ARRAY[game.rowIndex].map((row, i) => {
-      if (game.RANDOM_WORD[i] === row.value) {
-        return { color: "green", key: row.value };
-      }
-
-      if (game.RANDOM_WORD.includes(row.value)) {
-        return { color: "orange", key: row.value };
-      }
-      if (!game.RANDOM_WORD.includes(row.value)) {
-        return { color: "grey", key: row.value };
-      }
-    });
-    setKeyValue(array);
 
     if (getStringArray(ROW_ARRAY[game.rowIndex]) === game.RANDOM_WORD) {
       dispatch(
@@ -139,8 +128,6 @@ const HomeScreen = () => {
     dispatch(setColIndex(0));
   };
 
-  ////HANDLE RESTART
-  const handleRestart = () => {};
   const offset = useSharedValue(0);
 
   const animatedStyles = useAnimatedStyle(() => {
@@ -180,7 +167,7 @@ const HomeScreen = () => {
                           ? "rgb(161, 162, 139)"
                           : colors.border,
                       borderWidth:
-                        colIndex === i && rowIndex === rowkey ? 2 : 2,
+                        colIndex === i && rowIndex === rowkey ? 4 : 4,
                     },
                   ]}
                 >
@@ -203,6 +190,7 @@ const HomeScreen = () => {
         setKey={setKey}
         handleDelete={handleDelete}
       />
+      <Text>{game.RANDOM_WORD}</Text>
     </SafeAreaView>
   );
 };
