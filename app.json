@@ -3,17 +3,13 @@
     "name": "WORD GURU",
     "slug": "wordlle",
     "version": "1.0.0",
-    "plugings": [
+    "plugins": [
       [
         "react-native-fbsdk-next",
         {
           "appID": "1049775072395148",
           "clientToken": "58610546dcfc84e5e9563d53d34ac978",
-          "displayName": "WORDLLE",
-          "advertiserIDCollectionEnabled": false,
-          "autoLogAppEventsEnabled": false,
-          "isAutoInitEnabled": true,
-          "iosUserTrackingPermission": ""
+          "displayName": "WORDLLE"
         }
       ]
     ],
@@ -38,7 +34,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.mckenytech.wordlle"
     },
     "web": {
       "favicon": "./assets/favicon.png",
