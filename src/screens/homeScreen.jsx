@@ -172,7 +172,6 @@ const HomeScreen = () => {
           ))}
         </ScrollView>
       </View>
-
       <Keyboard
         keyValue={keyValue}
         handleSubmit={handleSubmit}
@@ -182,7 +181,8 @@ const HomeScreen = () => {
         setKey={setKey}
         handleDelete={handleDelete}
       />
-      <Text>{game.RANDOM_WORD}</Text>
+      {/*       <Text>{game.RANDOM_WORD}</Text>
+       */}
     </SafeAreaView>
   );
 };

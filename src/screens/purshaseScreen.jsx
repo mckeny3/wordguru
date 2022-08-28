@@ -88,6 +88,7 @@ const styles = (colors) =>
       alignItemsq: "center",
       alignSelf: "stretch",
       flexDirection: "row",
+      marginHorizontal: 10,
     },
     value_items: {
       flexDirection: "column",

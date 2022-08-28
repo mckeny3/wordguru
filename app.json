@@ -3,10 +3,10 @@
     "name": "WORDLLE",
     "slug": "wordlle",
     "version": "1.0.0",
-    "plugins": [],
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "scheme": "wordlle",
+    "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -27,6 +27,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
+      "versionCode": 1,
       "package": "com.mckenytech.wordlle"
     },
     "web": {
@@ -39,6 +40,9 @@
       "eas": {
         "projectId": "5e1fa144-5732-4bb2-9304-2d9be58e7d89"
       }
-    }
+    },
+    "plugins": [
+      "expo-community-flipper"
+    ]
   }
 }
