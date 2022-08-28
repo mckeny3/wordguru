@@ -17,9 +17,8 @@ import { useState } from "react";
 import userSlice, { resetUserStats } from "../redux/userSlice";
 import SettingsModal from "../components/settingsModal";
 import { getPercentage } from "../helperFunctions";
-import { singInWithGoogle } from "../services/firebase";
 import Loginform from "../components/login";
-
+import * as Device from "expo-device";
 const WelcomeScreen = () => {
   const { game } = useSelector((state) => state.reducer.game);
   const { user } = useSelector((state) => state.reducer.user);
@@ -84,27 +83,28 @@ const WelcomeScreen = () => {
   if (!fontsLoaded) {
     return null;
   } */
-
   const title = ["W", "O", "R", "D", "L", "L", "E"];
+  ////////////grab user data from firebase
+
   return (
     <SafeAreaView
-      style={[styles.container, { backgroundColor: colors.background }]}
+      style={[styles().container, { backgroundColor: colors.background }]}
     >
       <Modal transparent={true} visible={isSettingsModalOpen}>
         <SettingsModal toggle={toggleSettingsModal} />
       </Modal>
       <View
         style={[
-          styles.wrapper,
+          styles().wrapper,
           { backgroundColor: colors.card, shadowColor: "black" },
         ]}
       >
-        <View style={styles.title_wrapper}>
+        <View style={styles().title_wrapper}>
           {title.map((letter, i) => (
             <View
               key={i}
               style={{
-                shadowOpacity: 0.5,
+                shadowOpacity: 0.9,
                 shadowOffset: { width: 4, height: 6 },
                 shadowRadius: 10,
                 elevation: 3,
@@ -116,13 +116,16 @@ const WelcomeScreen = () => {
                   (letter === "R" && colors.notification) ||
                   (letter === "L" && "green") ||
                   (letter === "D" && "grey"),
-                borderWidth: 1,
+
                 borderRadius: 3,
                 padding: 4,
                 margin: 4,
+                borderColor: "#ccc",
+                borderBottomWidth: 4,
+                borderRightWidth: 4,
               }}
             >
-              <Text style={[styles.title_text, { color: "white" }]}>
+              <Text style={[styles().title_text, { color: "white" }]}>
                 {letter}
               </Text>
             </View>
@@ -130,121 +133,73 @@ const WelcomeScreen = () => {
         </View>
         {alert}
 
-        {!user ? (
+        {user ? (
           <>
-            <View style={styles.option_wrapper}>
+            <View style={styles().option_wrapper}>
               <Pressable
-                style={[styles.button, { backgroundColor: colors.primary }]}
+                style={[styles().button, { backgroundColor: colors.primary }]}
                 onPress={() => handleNewGame()}
               >
-                <Text style={styles.text}>New Game</Text>
+                <Text style={styles().text}>New Game</Text>
               </Pressable>
 
               {game.INIT && (
                 <Pressable
-                  style={[styles.button, { backgroundColor: colors.primary }]}
+                  style={[styles().button, { backgroundColor: colors.primary }]}
                   onPress={() => navigate.navigate("Home")}
                 >
-                  <Text style={[styles.text]}>Continue</Text>
+                  <Text style={[styles().text]}>Continue</Text>
                 </Pressable>
               )}
               <Pressable
-                style={[styles.button, { backgroundColor: colors.primary }]}
+                style={[styles().button, { backgroundColor: colors.primary }]}
                 onPress={() => toggleSettingsModal((prev) => !prev)}
               >
-                <Text style={styles.text}>SETTINGS</Text>
+                <Text style={styles().text}>SETTINGS</Text>
               </Pressable>
             </View>
             <View
               style={[
-                styles.game_stats,
+                styles().game_stats,
                 {
                   borderColor: colors.border,
                   backgroundColor: colors.card,
                 },
               ]}
             >
-              <View
-                style={[styles.game_stats.played, { color: colors.primary }]}
-              >
-                <Text
-                  style={[
-                    styles.game_stats.played.num,
-                    { color: colors.primary },
-                  ]}
-                >
+              <View style={[styles().game_stats.played]}>
+                <Text style={[styles(colors.primary).game_stats.played.num]}>
                   {user.PLAYED}
                 </Text>
 
-                <Text
-                  style={[
-                    styles.game_stats.played.text,
-                    { color: colors.primary },
-                  ]}
-                >
+                <Text style={[styles("", colors.soft).game_stats.played.text]}>
                   played
                 </Text>
               </View>
-              <View
-                style={[styles.game_stats.played, { color: colors.primary }]}
-              >
-                <Text
-                  style={[
-                    styles.game_stats.played.num,
-                    { color: colors.primary },
-                  ]}
-                >
+              <View style={[styles().game_stats.played]}>
+                <Text style={[styles(colors.primary).game_stats.played.num]}>
                   {getPercentage(user.WON, user.PLAYED)}%
                 </Text>
 
-                <Text
-                  style={[
-                    styles.game_stats.played.text,
-                    { color: colors.primary },
-                  ]}
-                >
-                  Win
-                </Text>
+                <Text style={[styles().game_stats.played.text]}>Win</Text>
               </View>
-              <View
-                style={[styles.game_stats.played, { color: colors.primary }]}
-              >
-                <Text
-                  style={[
-                    styles.game_stats.played.num,
-                    { color: colors.primary },
-                  ]}
-                >
+              <View style={[styles().game_stats.played]}>
+                <Text style={[styles(colors.primary).game_stats.played.num]}>
                   {user.STREAK}
                 </Text>
 
-                <Text
-                  style={[
-                    styles.game_stats.played.text,
-                    { color: colors.primary },
-                  ]}
-                >
+                <Text style={[styles().game_stats.played.text]}>
                   Current{`\n`}Streak
                 </Text>
               </View>
               <View
-                style={[styles.game_stats.played, { color: colors.primary }]}
+                style={[styles().game_stats.played, { color: colors.primary }]}
               >
-                <Text
-                  style={[
-                    styles.game_stats.played.num,
-                    { color: colors.primary },
-                  ]}
-                >
+                <Text style={[styles(colors.primary).game_stats.played.num]}>
                   {user.MAX_STREAK}
                 </Text>
 
-                <Text
-                  style={[
-                    styles.game_stats.played.text,
-                    { color: colors.primary },
-                  ]}
-                >
+                <Text style={[styles(colors.textSoft).game_stats.played.text]}>
                   Best{`\n`}Streak
                 </Text>
               </View>
@@ -262,89 +217,86 @@ const WelcomeScreen = () => {
 
 export default WelcomeScreen;
 
-const styles = StyleSheet.create({
-  title_wrapper: { flexDirection: "row" },
-  title_text: {
-    fontSize: 30,
-    fontWeight: "bold",
-    textShadowColor: "black",
-    shadowOpacity: 0.26,
-    textShadowOffset: { width: 2, height: 2 },
-    shadowRadius: 10,
-    backgroundColor: "transparent",
-  },
-  option_wrapper: { marginTop: 20 },
-
-  container: {
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "column",
-    alignSelf: "stretch",
-    flexGrow: 1,
-  },
-  wrapper: {
-    /* 
-    width: 500,
-    height: 200, */ /* 
-    maxHeight: 1000,
-    maxWidth: 700, */
-    maxWidth: 500,
-    alignItems: "center",
-    paddingVertical: 40,
-    paddingHorizontal: 10,
-
-    width: "80%",
-    marginVertical: "10%",
-    justifyContent: "center",
-    borderRadius: 20,
-    shadowOpacity: 0.26,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 10,
-    elevation: 3,
-  },
-  text: {
-    textAlign: "center",
-    fontSize: 20,
-    fontWeight: "900",
-    color: "white",
-  },
-  button: {
-    margin: 10,
-    padding: 10,
-    borderRadius: 20,
-
-    shadowColor: "black",
-    shadowOpacity: 0.26,
-    shadowOffset: { width: 2, height: 2 },
-    shadowRadius: 10,
-    elevation: 3,
-  },
-  game_stats: {
-    marginTop: 100,
-    width: "100%",
-    borderWidth: 1,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 10,
-    borderRadius: 15,
-    played: {
-      marginRight: 10,
-
-      alignItems: "center",
-      justifyContent: "center",
-      textAlign: "center",
-      text: {
-        fontWeight: "bold",
-      },
-
-      num: { fontWeight: "bold", fontSize: 20 },
+const styles = (colors, textColor) =>
+  StyleSheet.create({
+    title_wrapper: { flexDirection: "row" },
+    title_text: {
+      fontSize: 33,
+      fontWeight: "bold",
+      textShadowColor: "black",
+      shadowOpacity: 0.26,
+      textShadowOffset: { width: 2, height: 2 },
+      shadowRadius: 10,
+      backgroundColor: "transparent",
     },
-  },
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-  },
-});
+    option_wrapper: { marginTop: 20 },
+
+    container: {
+      justifyContent: "center",
+      alignItems: "center",
+      flexDirection: "column",
+      alignSelf: "stretch",
+      flexGrow: 1,
+    },
+    wrapper: {
+      maxWidth: 500,
+      alignItems: "center",
+      paddingVertical: 40,
+      paddingHorizontal: 10,
+      width: "95%",
+      marginVertical: "10%",
+      justifyContent: "center",
+      borderRadius: 20,
+      shadowOpacity: 0.5,
+      shadowColor: "black",
+      shadowOffset: { width: 6, height: 6 },
+      shadowRadius: 10,
+      elevation: 3,
+    },
+    text: {
+      textAlign: "center",
+      fontSize: 20,
+      fontWeight: "900",
+      color: "white",
+    },
+    button: {
+      margin: 10,
+      padding: 10,
+      borderRadius: 20,
+
+      shadowColor: "black",
+      shadowOpacity: 0.26,
+      shadowOffset: { width: 2, height: 2 },
+      shadowRadius: 10,
+      elevation: 3,
+    },
+    game_stats: {
+      marginTop: 100,
+      width: "100%",
+      borderWidth: 1,
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      paddingHorizontal: 6,
+      borderRadius: 15,
+      played: {
+        marginRight: 10,
+
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
+        text: {
+          color: textColor,
+          fontWeight: "bold",
+        },
+
+        num: { fontWeight: "bold", fontSize: 15, color: colors },
+      },
+    },
+    input: {
+      height: 40,
+      margin: 12,
+      borderWidth: 1,
+      padding: 10,
+    },
+  });

@@ -34,9 +34,12 @@ const SettingsModal = ({ toggle }) => {
           <Text style={[styles.title_textStyle, { color: colors.text }]}>
             SETTINGS
           </Text>
-          <Pressable style={styles.close_text} onPress={() => toggle(false)}>
+          <Pressable
+            style={[styles.close_text]}
+            onPress={() => toggle((preve) => !preve)}
+          >
             <Ionicons
-              style={[styles.close_text, { color: colors.text }]}
+              style={[{ color: colors.text, fontWeight: "bold", fontSize: 40 }]}
               name="close"
             />
           </Pressable>

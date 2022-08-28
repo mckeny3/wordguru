@@ -14,7 +14,7 @@ const Keyboard = ({ handleKey, handleDelete, handleSubmit, keyValue }) => {
   );
 
   return (
-    <View style={styles.keyboardWrapper}>
+    <View style={styles().keyboardWrapper}>
       <Actions
         rowIndex={game.rowIndex}
         colIndex={game.colIndex}
@@ -22,14 +22,24 @@ const Keyboard = ({ handleKey, handleDelete, handleSubmit, keyValue }) => {
       />
 
       {keyboard.map((item, i) => (
-        <View key={i} style={styles.row}>
+        <View key={i} style={styles().row}>
           {item.map((key, i) => (
             <Pressable
               style={[
-                styles.letter_wrapper,
+                styles().letter_wrapper,
                 {
                   backgroundColor:
-                    key.k_color === "transparent" ? colors.border : key.k_color,
+                    key.k_color === "transparent"
+                      ? colors.card
+                      : key.k_color === "grey"
+                      ? colors.danger
+                      : key.k_color,
+                  borderBottomWidth: 4,
+                  borderColor: colors.border,
+                  borderWidth: 1,
+                },
+                key.value === "DEL" && {
+                  width: keyWidth * 1.6,
                 },
               ]}
               key={i}
@@ -38,7 +48,11 @@ const Keyboard = ({ handleKey, handleDelete, handleSubmit, keyValue }) => {
               }
               // style={styles.letter}
             >
-              <Text style={[styles.letter]}>{key.value}</Text>
+              <Text
+                style={[styles({ del: 100 }).letter, { color: colors.text }]}
+              >
+                {key.value}
+              </Text>
             </Pressable>
           ))}
         </View>

@@ -13,6 +13,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import SettingsModal from "../settingsModal/index.jsx";
+import { Wcoins } from "../buttons/index.js";
 
 const GameHeader = () => {
   const [visible, setVisible] = useState(false);
@@ -33,7 +34,7 @@ const GameHeader = () => {
             color={colors.primary}
             size={30}
             style={styles.gameHeader_menu_icon}
-            name="home"
+            name="home-outline"
           />
         </Pressable>
 
@@ -42,26 +43,29 @@ const GameHeader = () => {
             color={colors.primary}
             size={30}
             style={styles.gameHeader_menu_icon}
-            name="settings"
+            name="settings-outline"
           />
         </Pressable>
       </View>
       <View
         style={[styles.gameHeader_middle, { backgroundColor: colors.card }]}
       >
-        <Text style={[styles.gameHeader_level, { color: colors.text }]}>
-          Level {game.LEVEL}
+        <Text style={[styles.gameHeader_level, { color: colors.textSoft }]}>
+          Points {user.POINTS}
         </Text>
       </View>
-      <View style={[styles.gameHeader_right, { backgroundColor: colors.card }]}>
-        <Ionicons
-          size={20}
-          style={styles.gameHeader_cart_icon}
-          name="cart-outline"
-        />
-        <Text style={styles.game_header_stars_num}>{user.STARS}</Text>
-        <Image source={{ uri: STAR_PNG }} style={styles.game_star_img} />
-      </View>
+      <Pressable
+        onPress={() => navigation.navigate("purchaseScreen")}
+        style={[styles.gameHeader_right, { backgroundColor: colors.card }]}
+      >
+        <Text
+          onPress={() => navigation.navigate("purchaseScreen")}
+          style={[styles.game_header_stars_num, { color: colors.textSoft }]}
+        >
+          {user.WCOINS}
+        </Text>
+        <Wcoins onPress={() => navigation.navigate("purchaseScreen")} />
+      </Pressable>
     </SafeAreaView>
   );
 };

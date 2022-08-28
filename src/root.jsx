@@ -4,12 +4,12 @@ import { StyleSheet, useColorScheme } from "react-native";
 import { useSelector } from "react-redux";
 import BottomAds from "./components/ads";
 import HomeScreen from "./screens/homeScreen";
+import PurchaseScreen from "./screens/purshaseScreen";
 import WelcomeScreen from "./screens/welcomeScreen";
 import { darkTheme, MyTheme } from "./theme";
 
 export default function Root() {
   const Stack = createNativeStackNavigator();
-  const scheme = useColorScheme();
   const { settings } = useSelector((state) => state.reducer.game);
 
   return (
@@ -26,17 +26,13 @@ export default function Root() {
             component={HomeScreen}
             options={{ headerShown: false, title: "" }}
           />
+          <Stack.Screen
+            name="purchaseScreen"
+            component={PurchaseScreen}
+            options={{ headerShown: false, title: "" }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});

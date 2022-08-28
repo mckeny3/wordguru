@@ -8,7 +8,7 @@ export const styles = StyleSheet.create({
     padding: 10,
     alignSelf: "stretch",
     alignItems: "center",
-    marginHorizontal: 4,
+    marginHorizontal: 10,
   },
   gameHeader_right: {
     flexDirection: "row",
@@ -51,7 +51,6 @@ export const styles = StyleSheet.create({
   },
   gameHeader_menu_icon: {},
   gameHeader_cart_icon: {
-    color: "white",
     marginRight: 10,
   },
 });

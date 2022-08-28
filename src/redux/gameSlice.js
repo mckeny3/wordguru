@@ -1,4 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { dangerColor } from "../constans";
+import { word } from "../data";
 import { getStringArray } from "../helperFunctions";
 const initialState = {
   game: {
@@ -59,7 +61,6 @@ const initialState = {
       { value: "B", k_color: "transparent", color: "" },
       { value: "N", k_color: "transparent", color: "" },
       { value: "M", k_color: "transparent", color: "" },
-      { value: "D", k_color: "transparent", color: "" },
       { value: "DEL", k_color: "transparent", color: "" },
     ],
   ],
@@ -121,7 +122,7 @@ const gameSlice = createSlice({
             })
           );
 
-          return { ...(row.color = "grey") };
+          return { ...(row.color = dangerColor) };
         }
       });
     },
@@ -148,11 +149,11 @@ const gameSlice = createSlice({
 
         game: {
           ...state.game,
-          LEVEL: state.game.LEVEL + 1,
           MODAL_OPEN: false,
           WON: false,
           colIndex: 0,
           rowIndex: 0,
+          RANDOM_WORD: word[Math.floor(Math.random() * word.length)],
         },
       };
     },

@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { FirebaseApp } from "firebase/app";
-import REACT_APP_FIREBASE_KEY from "../secret";
+import { REACT_APP_FIREBASE_KEY } from "../secret";
 const firebaseConfig = {
   apiKey: REACT_APP_FIREBASE_KEY,
   authDomain: "wordlle.firebaseapp.com",

@@ -1,36 +1,26 @@
 import {
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
   View,
-  Image,
   SafeAreaView,
-  Alert,
-  Platform,
   Modal,
 } from "react-native";
 import React, { useEffect } from "react";
 import Keyboard from "../components/keyboard";
 import { word } from "../data";
 import { useState } from "react";
-import Actions from "../components/Action";
 import GameHeader from "../components/gameHeader";
 import ExpoStatusBar from "expo-status-bar/build/ExpoStatusBar";
-import gameSlice, {
+import {
   endGame,
   setArrayRow,
-  setBgColor,
   setColIndex,
-  setKeysColor,
   setRandomWord,
   setRowIndex,
   updateColor,
 } from "../redux/gameSlice";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-} from "react-native-reanimated";
+import { useAnimatedStyle, useSharedValue } from "react-native-reanimated";
 import { useSelector, useDispatch } from "react-redux";
 import { getStringArray } from "../helperFunctions";
 import WonModel from "../components/wonModel";
@@ -43,12 +33,10 @@ const HomeScreen = () => {
   const [arrayLen, setArrayLen] = useState(5);
   const [isGameStart, setIsgameStart] = useState(false);
   const [letter, setLetter] = useState();
-  const { game, ROW_ARRAY, keyboard } = useSelector(
-    (state) => state.reducer.game
-  );
+  const { game, ROW_ARRAY } = useSelector((state) => state.reducer.game);
   const colIndex = game.colIndex;
   const rowIndex = game.rowIndex;
-  const {} = useSelector((state) => state.reducer.user);
+  const { user } = useSelector((state) => state.reducer.user);
   const dispatch = useDispatch();
   const [keyValue, setKeyValue] = useState([]);
 
@@ -58,7 +46,7 @@ const HomeScreen = () => {
     len = Math.floor(len);
 
     dispatch(setRandomWord(word[len]));
-  }, [game.LEVEL]);
+  }, []);
 
   ////entered key
   const handleKey = (item) => {
@@ -78,7 +66,7 @@ const HomeScreen = () => {
     //const pop = g.splice(g.length - 1, 1);
     let copy = [...ROW_ARRAY.map((row) => [...row])];
 
-    copy[rowIndex][colIndexReverse] = "";
+    copy[rowIndex][colIndexReverse] = { value: "", color: "transparent" };
     dispatch(setColIndex(colIndexReverse));
     dispatch(setArrayRow(copy));
   };
@@ -90,6 +78,8 @@ const HomeScreen = () => {
     dispatch(updateColor(game.ROW_ARRAY));
 
     if (getStringArray(ROW_ARRAY[game.rowIndex]) === game.RANDOM_WORD) {
+      dispatch(updateSuccessStatus(ROW_ARRAY.length - game.rowIndex));
+
       dispatch(
         endGame({
           result: true,
@@ -98,10 +88,9 @@ const HomeScreen = () => {
           rowIndex: 0,
         })
       );
-      dispatch(updateSuccessStatus());
-
+      /* 
       dispatch(setRowIndex(rowIndex + 1));
-      dispatch(setColIndex(0));
+      dispatch(setColIndex(0)); */
       return;
     }
 
@@ -118,9 +107,9 @@ const HomeScreen = () => {
         })
       );
       dispatch(updateLostStatus());
-
+      /* 
       dispatch(setRowIndex(rowIndex + 1));
-      dispatch(setColIndex(0));
+      dispatch(setColIndex(0)); */
       return;
     }
 
@@ -161,13 +150,16 @@ const HomeScreen = () => {
                     animatedStyles,
                     styles.game_cell,
                     {
-                      backgroundColor: cell.color ? cell.color : colors.card,
-                      borderColor:
+                      backgroundColor: cell.color,
+                      /* 
                         colIndex === i && rowIndex === rowkey
-                          ? "rgb(161, 162, 139)"
+                          ? "rgb(161, 162, 139)" */
+                      borderColor:
+                        cell.color !== "transparent"
+                          ? cell.color
                           : colors.border,
                       borderWidth:
-                        colIndex === i && rowIndex === rowkey ? 4 : 4,
+                        colIndex === i && rowIndex === rowkey ? 4 : 3,
                     },
                   ]}
                 >

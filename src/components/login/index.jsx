@@ -10,7 +10,6 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { useTheme } from "@react-navigation/native";
 import app from "../../services/firebase";
-import { AccessToken, LoginManager } from "react-native-fbsdk-next";
 import {
   FacebookAuthProvider,
   getAuth,
@@ -22,24 +21,7 @@ const Loginform = ({ onPress }) => {
   const { game, ROW_ARRAY } = useSelector((state) => state.reducer.game);
   const { colors } = useTheme();
 
-  const signInWithFacebook = async () => {
-    const res = await LoginManager.logInWithPermissions([
-      "public_profile",
-      "email",
-    ]);
-    if (res.isCancelled) {
-      throw new Error("User cancelled Login");
-    }
-    const data = await AccessToken.getCurrentAccessToken();
-    if (!data) {
-      throw new Error("something went wrong whille trying to sign in");
-    }
-    const auth = getAuth(app);
-    const credential = FacebookAuthProvider.credential(data.accessToken);
-
-    const user = await signInWithCredential(auth, credential);
-    console.log(user);
-  };
+  const signInWithFacebook = async () => {};
 
   return (
     <View>
@@ -51,7 +33,7 @@ const Loginform = ({ onPress }) => {
       <TextInput
         style={styles.input}
         onChangeText={onChangeNumber}
-        value={number}
+        value="ggg"
         placeholder="useless placeholder"
         keyboardType="numeric"
       />

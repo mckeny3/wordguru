@@ -12,21 +12,25 @@ export const MyTheme = {
   dark: false,
   colors: {
     primary: "rgb(255, 45, 85)",
-    background: "rgb(242, 242, 242)",
-    card: "rgb(255, 255, 255)",
+    background: "white",
+    card: "rgb(229, 229, 231)",
     text: "rgb(28, 28, 30)",
+    textSoft: "#606060",
+
     border: "rgb(199, 199, 204)",
     notification: "rgb(255, 69, 58)",
     buttonActive: "rgb(10, 132, 255)",
     buttonDisable: "#606060",
     buttonText: "white",
     shadow: "black",
+    danger: "#CA0B00",
   },
 };
 export const darkTheme = {
   colors: {
+    dark: true,
     background: "#181818",
-    border: "rgb(39, 39, 41)",
+    border: "#aaaaaa",
     card: "#606060",
     notification: "rgb(255, 69, 58)",
     primary: "rgb(10, 132, 255)",
@@ -34,6 +38,9 @@ export const darkTheme = {
     buttonDisable: "#606060",
     buttonText: "white",
     text: "rgb(229, 229, 231)",
+    textSoft: "#aaaaaa",
+
+    danger: "#CA0B00",
   },
   dark: true,
 };
