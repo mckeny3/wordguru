@@ -2,7 +2,7 @@
   "expo": {
     "name": "WORDLLE",
     "slug": "wordlle",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "wordlle",
@@ -13,22 +13,27 @@
       "backgroundColor": "#ffffff"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/5e1fa144-5732-4bb2-9304-2d9be58e7d89"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.mckenytech.wordlle"
+      "bundleIdentifier": "com.mckenytech.wordlle",
+      "runtimeVersion": {
+        "policy": "sdkVersion"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "versionCode": 1,
-      "package": "com.mckenytech.wordlle"
+      "versionCode": 2,
+      "package": "com.mckenytech.wordlle",
+      "runtimeVersion": "1.0.2"
     },
     "web": {
       "favicon": "./assets/favicon.png",
@@ -36,6 +41,7 @@
         "bundler": "metro"
       }
     },
+    "privacy": "public",
     "extra": {
       "eas": {
         "projectId": "5e1fa144-5732-4bb2-9304-2d9be58e7d89"

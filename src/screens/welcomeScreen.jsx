@@ -20,7 +20,7 @@ import { getPercentage } from "../helperFunctions";
 import Loginform from "../components/login";
 import * as Device from "expo-device";
 const WelcomeScreen = () => {
-  const { game } = useSelector((state) => state.reducer.game);
+  const { game, settings } = useSelector((state) => state.reducer.game);
   const { user } = useSelector((state) => state.reducer.user);
   const [visible, setVisible] = useState(false);
   const [isSettingsModalOpen, toggleSettingsModal] = useState(false);
@@ -88,7 +88,13 @@ const WelcomeScreen = () => {
 
   return (
     <SafeAreaView
-      style={[styles().container, { backgroundColor: colors.background }]}
+      style={[
+        styles().container,
+        {
+          backgroundColor:
+            settings.DARK_MODE === true ? colors.background : colors.primary,
+        },
+      ]}
     >
       <Modal transparent={true} visible={isSettingsModalOpen}>
         <SettingsModal toggle={toggleSettingsModal} />

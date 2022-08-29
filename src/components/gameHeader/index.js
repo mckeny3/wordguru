@@ -34,7 +34,7 @@ const GameHeader = () => {
             color={colors.primary}
             size={30}
             style={styles.gameHeader_menu_icon}
-            name="home-outline"
+            name="home"
           />
         </Pressable>
 

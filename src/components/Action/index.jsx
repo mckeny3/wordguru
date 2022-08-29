@@ -113,7 +113,7 @@ const Actions = ({ onPress, colIndex }) => {
         disabled={game.rowIndex === 0 ? true : false}
         onPress={() => handleRewind()}
         width={50}
-        title={<Ionicons name="play-back" size={20} />}
+        title={<Ionicons name="arrow-undo-circle" size={30} />}
       />
       <Pressable
         disabled={
