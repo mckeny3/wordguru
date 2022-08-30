@@ -1,13 +1,14 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Platform, StyleSheet, useColorScheme } from "react-native";
+import { Platform, StyleSheet, Text, useColorScheme } from "react-native";
 import { Provider, useSelector } from "react-redux";
-import { store } from "./src/redux/store";
+import { store, persistor } from "./src/redux/store";
 import BottomAds from "./src/components/ads";
 import { connectToDevTools } from "react-devtools-core";
 import { activateAdapty } from "react-native-adapty";
 
 import Root from "./src/root";
 import { useEffect } from "react";
+import { PersistGate } from "redux-persist/integration/react";
 export default function App() {
   const Stack = createNativeStackNavigator();
   const scheme = useColorScheme();
@@ -24,7 +25,9 @@ export default function App() {
   return (
     <>
       <Provider store={store}>
-        <Root />
+        <PersistGate loading={<Text>Loading...</Text>} persistor={persistor}>
+          <Root />
+        </PersistGate>
       </Provider>
     </>
   );

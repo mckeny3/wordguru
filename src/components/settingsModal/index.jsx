@@ -1,4 +1,11 @@
-import { Pressable, StyleSheet, Switch, Text, View } from "react-native";
+import {
+  Linking,
+  Pressable,
+  StyleSheet,
+  Switch,
+  Text,
+  View,
+} from "react-native";
 import React from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,6 +15,7 @@ import { getPercentage } from "../../helperFunctions";
 import { useTheme } from "@react-navigation/native";
 import { useState } from "react";
 import { color } from "react-native-reanimated";
+import { Link } from "@react-navigation/native";
 
 const SettingsModal = ({ toggle }) => {
   const { game, settings } = useSelector((state) => state.reducer.game);
@@ -23,6 +31,11 @@ const SettingsModal = ({ toggle }) => {
     setIsEnabled((previousState) => !previousState);
 
     dispatch(setDarkMode());
+  };
+  const openURL = (url) => {
+    Linking.openURL(
+      "https://www.privacypolicies.com/live/57c95cb9-72b1-4c11-8854-77e647ddfce9"
+    ).catch((err) => console.error("An error occurred", err));
   };
   const { colors } = useTheme();
   return (
@@ -59,6 +72,22 @@ const SettingsModal = ({ toggle }) => {
             />
           </Pressable>
         </View>
+        <View style={styles.privacy_wrapper}>
+          <Pressable onPress={() => openURL()}>
+            <Text
+              style={[
+                {
+                  fontSize: 24,
+                  color: colors.textSoft,
+                  fontWeight: "bold",
+                  textDecorationLine: "underline",
+                },
+              ]}
+            >
+              Privacy
+            </Text>
+          </Pressable>
+        </View>
       </View>
     </View>
   );
@@ -88,6 +117,7 @@ const styles = StyleSheet.create({
     elevation: 50,
 
     shadowRadius: 4,
+    justifyContent: "space-between",
   },
   switch_text: {
     fontWeight: "bold",
@@ -151,5 +181,12 @@ const styles = StyleSheet.create({
   title_textStyle: {
     fontSize: 30,
     fontWeight: "900",
+  },
+  privacy_wrapper: {
+    marginTop: "auto",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+    padding: 10,
   },
 });

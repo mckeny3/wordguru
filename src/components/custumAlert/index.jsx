@@ -1,8 +1,10 @@
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { useState } from "react";
-
+import { useTheme } from "@react-navigation/native";
 const CustomAlert = ({ title, msg, setVisible, visible, onCallBack }) => {
+  const { colors } = useTheme();
+
   return (
     <Modal visible={visible} transparent={true}>
       <View style={styles.container}>
@@ -22,15 +24,27 @@ const CustomAlert = ({ title, msg, setVisible, visible, onCallBack }) => {
           <View style={styles.action_wrapper}>
             <Pressable
               onPress={() => setVisible(false)}
-              style={styles.cancel_button_style}
+              style={[
+                styles.cancel_button_style,
+                { backgroundColor: colors.primary },
+              ]}
             >
-              <Text style={styles.action_text_style}>CANCEL</Text>
+              <Text
+                style={[styles.action_text_style, { color: colors.danger }]}
+              >
+                CANCEL
+              </Text>
             </Pressable>
             <Pressable
               onPress={() => onCallBack()}
-              style={styles.confirm_button_style}
+              style={[
+                styles.confirm_button_style,
+                { backgroundColor: colors.primary },
+              ]}
             >
-              <Text style={styles.action_text_style}>CONFIRM</Text>
+              <Text style={[styles.action_text_style, { color: colors.text }]}>
+                CONFIRM
+              </Text>
             </Pressable>
           </View>
         </View>

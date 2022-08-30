@@ -9,7 +9,7 @@ import StyledButton from "../buttons";
 import { useTheme } from "@react-navigation/native";
 
 const WonModel = () => {
-  const { game } = useSelector((state) => state.reducer.game);
+  const { game, ROW_ARRAY } = useSelector((state) => state.reducer.game);
   const { user } = useSelector((state) => state.reducer.user);
   const dispatch = useDispatch();
 
@@ -37,6 +37,19 @@ const WonModel = () => {
             The answer is {game.RANDOM_WORD}!
           </Text>
         </View>
+        {game.WON && ( // if the game is won
+          <View style={styles().result_wrapper}>
+            <Text style={styles(colors.textSoft).gain_textStyle}>
+              Wcoins <Text style={styles().gain_num_style}>+10</Text>
+            </Text>
+            <Text style={styles(colors.textSoft).gain_textStyle}>
+              Points{" "}
+              <Text style={styles(colors.textSoft).gain_num_style}>
+                +{user.POINTS_GAINED}
+              </Text>
+            </Text>
+          </View>
+        )}
         <View style={styles().game_stats}>
           <View style={styles().game_stats.played}>
             <Text style={styles(colors.primary).game_stats.played.num}>
@@ -83,12 +96,25 @@ export default WonModel;
 
 const styles = (colors) =>
   StyleSheet.create({
+    gain_num_style: {
+      color: "green",
+      fontWeight: "bold",
+      fontSize: 30,
+      margin: 10,
+    },
+    gain_textStyle: {
+      color: colors,
+      fontSize: 20,
+      fontWeight: "bold",
+      margin: 10,
+    },
     modelContainer: {
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
     },
     modelWrapper: {
+      justifyContent: "space-between",
       position: "relative",
       flexDirection: "column",
       backgroundColor: "white",
@@ -108,7 +134,7 @@ const styles = (colors) =>
     },
 
     game_stats: {
-      marginTop: 100,
+      //marginTop: 100,
       borderWidth: 1,
       flexDirection: "row",
       justifyContent: "space-between",
@@ -139,7 +165,7 @@ const styles = (colors) =>
       borderColor: "#ddd",
       padding: 5,
       borderRadius: 15,
-      marginTop: 80,
+      //marginTop: 80,
     },
     button: {
       borderRadius: 50,
@@ -176,7 +202,7 @@ const styles = (colors) =>
     result_wrapper: {
       borderWidth: 2,
       margin: 10,
-      marginTop: 50,
+      // marginTop: 50,
       borderRadius: 30,
       padding: 20,
       borderColor: "#ddd",

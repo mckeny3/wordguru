@@ -2,16 +2,31 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { useTheme } from "@react-navigation/native";
 
-export const Wcoins = () => {
+export const Wcoins = ({
+  disabled = false,
+  onPress = () => {},
+  style = {},
+  children,
+  width = 35,
+  bg = "#edcc5f",
+  height = 35,
+  borderColor = "#c2a444",
+  title = "W",
+  borderBottomWidth = 4,
+  borderRightWidth = 4,
+
+  textStyle = { textAlign: "center", fontSize: 22, fontWeight: "bold" },
+}) => {
   return (
     <StyledButton
-      width={35}
-      height={35}
-      bg="#edcc5f"
-      borderColor={"#c2a444"}
-      title="W"
-      borderBottomWidth={4}
-      borderRightWidth={4}
+      title={title}
+      width={width}
+      height={height}
+      borderColor={borderColor}
+      borderBottomWidth={borderBottomWidth}
+      borderRightWidth={borderRightWidth}
+      bg={bg}
+      textStyle={textStyle}
     />
   );
 };
@@ -28,6 +43,7 @@ const StyledButton = ({
   height,
   borderBottomWidth,
   borderRightWidth,
+  textStyle = { textAlign: "center", fontSize: 22, fontWeight: "bold" },
 }) => {
   const { colors } = useTheme();
 
@@ -49,9 +65,7 @@ const StyledButton = ({
         { style },
       ]}
     >
-      <Text style={[styles().submit_text, { color: colors.buttonText }]}>
-        {title}
-      </Text>
+      <Text style={[textStyle, { color: colors.buttonText }]}>{title}</Text>
     </Pressable>
   );
 };

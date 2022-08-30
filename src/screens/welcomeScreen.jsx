@@ -11,7 +11,7 @@ import {
 import React from "react";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
-import { resetGame, setNewGame } from "../redux/gameSlice";
+import { endGame, resetGame, setNewGame, setNextLvl } from "../redux/gameSlice";
 import CustomAlert from "../components/custumAlert";
 import { useState } from "react";
 import userSlice, { resetUserStats } from "../redux/userSlice";
@@ -44,9 +44,8 @@ const WelcomeScreen = () => {
       return;
     }
     if (value) {
-      dispatch(resetGame());
       dispatch(resetUserStats());
-
+      dispatch(setNextLvl());
       dispatch(setNewGame(true));
       setVisible(false);
       navigate.navigate("Home");

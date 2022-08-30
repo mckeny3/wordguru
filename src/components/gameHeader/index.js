@@ -19,7 +19,9 @@ const GameHeader = () => {
   const [visible, setVisible] = useState(false);
   const [isSettingsModalOpen, toggleSettingsModal] = useState(false);
   const { game } = useSelector((state) => state.reducer.game);
-  const { user } = useSelector((state) => state.reducer.user);
+  const { user, PURCHASES, USER_NAME } = useSelector(
+    (state) => state.reducer.user
+  );
   const dispatch = useDispatch();
   const { colors } = useTheme();
   const navigation = useNavigation();
@@ -62,7 +64,7 @@ const GameHeader = () => {
           onPress={() => navigation.navigate("purchaseScreen")}
           style={[styles.game_header_stars_num, { color: colors.textSoft }]}
         >
-          {user.WCOINS}
+          {PURCHASES.WCOINS}
         </Text>
         <Wcoins onPress={() => navigation.navigate("purchaseScreen")} />
       </Pressable>

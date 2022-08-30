@@ -7,7 +7,6 @@ const initialState = {
     MODAL_OPEN: false,
     END: false,
     PLAYING: false,
-    LEVEL: 1,
     WON: false,
     LOST: false,
     wordLength: 5,
@@ -15,7 +14,6 @@ const initialState = {
     colIndex: 0,
     rowIndex: 0,
     ATTEMPTS: 6,
-    darkMode: false,
     INIT: false,
     KEY_COLOR: [],
   },
@@ -27,6 +25,7 @@ const initialState = {
   ),
   settings: {
     DARK_MODE: false,
+    RANDOM_COLOR: "",
   },
   keyboard: [
     [
@@ -70,6 +69,10 @@ const gameSlice = createSlice({
   name: "game",
   initialState: initialState,
   reducers: {
+    setRandomColor: (state, action) => {
+      state.settings.RANDOM_COLOR = action.payload;
+    },
+
     setKeysColor: (state, actions) => {},
     setDarkMode: (state, action) => {
       return {
@@ -77,7 +80,18 @@ const gameSlice = createSlice({
         settings: { ...state.settings, DARK_MODE: !state.settings.DARK_MODE },
       };
     },
-    resetGame: (state) => (state = initialState),
+    resetGame: (state) => {
+      state = initialState;
+
+      return {
+        ...state,
+        game: {
+          ...state.game,
+          RANDOM_WORD: word[Math.floor(Math.random() * word.length)],
+        },
+      };
+    },
+
     setNewGame: (state, action) => {
       return { ...state, game: { ...state.game, INIT: action.payload } };
     },
@@ -116,7 +130,6 @@ const gameSlice = createSlice({
               if (row.value === key.value) {
                 /*                 return { ...(key.k_color = "grey") };
                  */
-                console.log("word not included", row.value);
                 return { ...(key.k_color = "grey") };
               }
             })
@@ -132,6 +145,9 @@ const gameSlice = createSlice({
     endGame: (state, action) => {
       return {
         ...state,
+
+        ROW_ARRAY: initialState.ROW_ARRAY,
+        keyboard: initialState.keyboard,
         game: {
           ...state.game,
           WON: action.payload.result,
@@ -168,6 +184,7 @@ const gameSlice = createSlice({
 
 export const {
   resetGame,
+  setRandomColor,
   setDarkMode,
   setKeysColor,
   setNewGame,

@@ -10,7 +10,6 @@
         "gradleCommand": ":app:assembleDebug",
         "buildType": "apk"
       },
-      "autoIncrement": true,
       "ios": {
         "buildConfiguration": "Debug"
       }

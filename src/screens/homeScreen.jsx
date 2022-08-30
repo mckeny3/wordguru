@@ -5,6 +5,9 @@ import {
   View,
   SafeAreaView,
   Modal,
+  Button,
+  Alert,
+  Pressable,
 } from "react-native";
 import React, { useEffect } from "react";
 import Keyboard from "../components/keyboard";
@@ -16,6 +19,8 @@ import {
   endGame,
   setArrayRow,
   setColIndex,
+  setDarkMode,
+  setRandomColor,
   setRandomWord,
   setRowIndex,
   updateColor,
@@ -26,6 +31,11 @@ import { getStringArray } from "../helperFunctions";
 import WonModel from "../components/wonModel";
 import { updateLostStatus, updateSuccessStatus } from "../redux/userSlice";
 import { useTheme } from "@react-navigation/native";
+import StyledButton from "../components/buttons";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import AwesomeAlert from "react-native-awesome-alerts";
+import CustomAlert from "../components/custumAlert";
+
 const HomeScreen = () => {
   const [fiveLetter, setFiveLetter] = useState("");
   const [result, setResult] = useState(false);
@@ -33,13 +43,15 @@ const HomeScreen = () => {
   const [arrayLen, setArrayLen] = useState(5);
   const [isGameStart, setIsgameStart] = useState(false);
   const [letter, setLetter] = useState();
-  const { game, ROW_ARRAY } = useSelector((state) => state.reducer.game);
+  const { game, ROW_ARRAY, settings } = useSelector(
+    (state) => state.reducer.game
+  );
   const colIndex = game.colIndex;
   const rowIndex = game.rowIndex;
   const { user } = useSelector((state) => state.reducer.user);
   const dispatch = useDispatch();
   const [keyValue, setKeyValue] = useState([]);
-
+  const [showAlert, setShowAlert] = useState(false);
   useEffect(() => {
     let len = word.length;
     len = Math.random() * len;
@@ -124,19 +136,67 @@ const HomeScreen = () => {
       transform: [{ translateX: offset.value * 255 }],
     };
   });
-
   const { colors } = useTheme();
+
+  /*  useEffect(() => {
+    const getRandomColor = () => {
+      var letters = "0123456789ABCDEF";
+      var colorz = "#";
+      for (var i = 0; i < 6; i++) {
+        colorz += letters[Math.floor(Math.random() * 16)];
+      }
+      return dispatch(setRandomColor(colorz));
+    };
+    getRandomColor();
+  }, []); */
+  const handleRandomColor = () => {
+    console.log("random color");
+    const getRandomColor = () => {
+      var letters = "0123456789ABCDEF";
+      var colorz = "#";
+      for (var i = 0; i < 6; i++) {
+        colorz += letters[Math.floor(Math.random() * 16)];
+      }
+      return dispatch(setRandomColor(colorz));
+    };
+    getRandomColor();
+  };
+
   return (
-    <SafeAreaView style={[styles.container, {}]}>
-      <ExpoStatusBar />
+    <SafeAreaView
+      style={[
+        styles.container,
+        {
+          backgroundColor:
+            settings.DARK_MODE === true
+              ? colors.background
+              : settings.RANDOM_COLOR,
+        },
+      ]}
+    >
+      <ExpoStatusBar style="light" />
+      <CustomAlert
+        title="ALERT"
+        msg="you can only change theme in light mode, Do you want to switch?"
+        visible={showAlert}
+        setVisible={setShowAlert}
+        onCallBack={() => {
+          dispatch(setDarkMode());
+          setShowAlert(false);
+        }}
+      />
       <GameHeader />
-      <View
-        style={[
-          styles.game_wrapper,
-          animatedStyles,
-          { backgroundColor: colors.background },
-        ]}
+      <Pressable
+        onPress={
+          settings.DARK_MODE === true
+            ? () => setShowAlert((prev) => !prev)
+            : () => handleRandomColor()
+        }
+        style={styles.color_changer}
       >
+        <Ionicons name="color-palette" size={30} color={colors.primary} />
+      </Pressable>
+      <View style={[[styles.game_wrapper, {}], {}]}>
         <Modal transparent={true} visible={game.MODAL_OPEN}>
           <WonModel />
         </Modal>
@@ -147,7 +207,6 @@ const HomeScreen = () => {
                 <View
                   key={i}
                   style={[
-                    animatedStyles,
                     styles.game_cell,
                     {
                       backgroundColor: cell.color,
@@ -223,6 +282,21 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "900",
     fontSize: 32,
+  },
+  color_changer: {
+    alignSelf: "flex-end",
+    marginBottom: 10,
+    top: 100,
+    position: "absolute",
+    backgroundColor: "grey",
+    opacity: 0.5,
+    height: 30,
+    padding: 1,
+    overflow: "hidden",
+    borderW2idth: 2,
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 10,
+    width: 30,
   },
 });
 
