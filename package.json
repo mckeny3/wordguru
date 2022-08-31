@@ -21,6 +21,7 @@
     "expo-dev-client": "~1.2.1",
     "expo-device": "~4.3.0",
     "expo-font": "~10.2.0",
+    "expo-in-app-purchases": "~13.1.0",
     "expo-speech": "~10.3.0",
     "expo-splash-screen": "~0.16.1",
     "expo-status-bar": "~1.4.0",
