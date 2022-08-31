@@ -4,6 +4,7 @@ import { StyleSheet, useColorScheme } from "react-native";
 import { useSelector } from "react-redux";
 import BottomAds from "./components/ads";
 import HomeScreen from "./screens/homeScreen";
+import Paywall from "./screens/ModuleScreen/Paywall";
 import PurchaseScreen from "./screens/purshaseScreen";
 import WelcomeScreen from "./screens/welcomeScreen";
 import { darkTheme, MyTheme } from "./theme";
@@ -29,6 +30,11 @@ export default function Root() {
           <Stack.Screen
             name="purchaseScreen"
             component={PurchaseScreen}
+            options={{ headerShown: false, title: "" }}
+          />
+          <Stack.Screen
+            name="paywallScreen"
+            component={Paywall}
             options={{ headerShown: false, title: "" }}
           />
         </Stack.Navigator>

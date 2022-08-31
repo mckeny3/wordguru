@@ -31,7 +31,7 @@ export const darkTheme = {
     dark: true,
     background: "#181818",
     border: "#aaaaaa",
-    card: "#606060",
+    card: "#1e1e1e",
     notification: "rgb(255, 69, 58)",
     primary: "rgb(10, 132, 255)",
     buttonActive: "rgb(10, 132, 255)",

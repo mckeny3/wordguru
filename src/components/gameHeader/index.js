@@ -57,16 +57,16 @@ const GameHeader = () => {
         </Text>
       </View>
       <Pressable
-        onPress={() => navigation.navigate("purchaseScreen")}
+        onPress={() => navigation.navigate("paywallScreen")}
         style={[styles.gameHeader_right, { backgroundColor: colors.card }]}
       >
         <Text
-          onPress={() => navigation.navigate("purchaseScreen")}
+          onPress={() => navigation.navigate("paywallScreen")}
           style={[styles.game_header_stars_num, { color: colors.textSoft }]}
         >
           {PURCHASES.WCOINS}
         </Text>
-        <Wcoins onPress={() => navigation.navigate("purchaseScreen")} />
+        <Wcoins onPress={() => navigation.navigate("paywallScreen")} />
       </Pressable>
     </SafeAreaView>
   );
