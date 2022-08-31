@@ -15,8 +15,12 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import fontAwsome from "react-native-vector-icons/FontAwesome";
 import StyledButton from "../../../components/buttons";
 import { value_pack } from "../../../data/purchaseItems";
-import { activateAdapty, adapty } from "react-native-adapty";
-import * as InAppPurchases from "expo-in-app-purchases";
+import {
+  activateAdapty,
+  adapty,
+  MakePurchaseParams,
+} from "react-native-adapty";
+//import * as InAppPurchases from "expo-in-app-purchases";
 
 const Paywall = () => {
   const dispatch = useDispatch();
@@ -53,8 +57,20 @@ const Paywall = () => {
   if (!paywall) {
     return <ActivityIndicator />;
   }
-  console.log("paywall", paywall.products);
+  //console.log("paywall", paywall.products);
   const paywallData = JSON.parse(paywall.customPayloadString || "{}");
+  /////HANDLING PURCHASE
+  const handlePurchase = async (buyProduct) => {
+    // console.log({ product });
+    try {
+      const { receipt, purchaserInfo } = await adapty.purchases.makePurchase(
+        buyProduct
+      );
+      // console.log({ product, purchaserInfo, receipt });
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
 
   return (
     <SafeAreaView style={styles(colors).wrapper}>
@@ -73,7 +89,11 @@ const Paywall = () => {
       </View>
       <ScrollView>
         {paywall?.products.map((item, index) => (
-          <View key={index} style={styles(colors.card).value_wrapper}>
+          <Pressable
+            onPress={() => handlePurchase(item)}
+            key={index}
+            style={styles(colors.card).value_wrapper}
+          >
             <View style={styles(colors).value_items_left}>
               <View style={styles().value_items}>
                 <StyledButton
@@ -102,7 +122,7 @@ const Paywall = () => {
                 </Text>
               </View>
             </View>
-          </View>
+          </Pressable>
         ))}
       </ScrollView>
     </SafeAreaView>
